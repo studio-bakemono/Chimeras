@@ -1,0 +1,42 @@
+version: 1.0.{build}
+environment:
+  BUTLER_API_KEY:
+    secure: bZkOKL8V53LQmlsTfACsI7nrLZiVma21avzj6kafl/QeOh8vWow1O5Lm7oFGnz2P
+build_script:
+- cmd: >-
+    set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+
+    set PATH=C:\mingw-w64\x86_64-7.3.0-posix-seh-rt_v5-rev0\mingw64\bin;%PATH%
+
+    set SFML_DIR=..\SFML-2.5.0
+
+
+    powershell -command "Invoke-WebRequest -uri https://www.sfml-dev.org/files/SFML-2.5.0-windows-gcc-7.3.0-mingw-64-bit.zip -UseBasicParsing -OutFile SFML.zip"
+
+    powershell -command "Expand-Archive -Path SFML.zip -DestinationPath . -Force"
+
+
+    cd build
+
+    cmake -G "MinGW Makefiles" ..
+
+    mingw32-make
+
+    cd ..
+
+
+    mkdir dist\Groupong
+
+    xcopy /y build\pong.exe dist\Groupong
+
+    xcopy /y SFML-2.5.0\bin\*.dll dist\Groupong
+
+
+    cd dist
+
+    powershell -command "Invoke-WebRequest -uri https://broth.itch.ovh/butler/windows-amd64/14.13.0/archive/default -UseBasicParsing -OutFile butler.zip"
+
+    powershell -command "Expand-Archive -Path butler.zip -DestinationPath . -Force"
+
+
+    butler push Groupong studio-bakemono/groupong:windows

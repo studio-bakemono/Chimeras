@@ -30,3 +30,20 @@
 *.exe
 *.out
 *.app
+
+# Emacs buffers
+*.cpp~
+*.hpp~
+*.#.cpp
+*.#.hpp
+
+*.gitignore~
+*makefile~
+
+#don't push contents of build or SFML, it's all junk
+build/*
+SFML/*
+#but keep the directories
+!build/.gitkeep
+!SFML/.gitkeep
+.vscode/settings.json

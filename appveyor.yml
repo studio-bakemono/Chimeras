@@ -25,11 +25,11 @@ build_script:
     cd ..
 
 
-    mkdir dist\Groupong
+    mkdir dist\Chimeras
 
-    xcopy /y build\pong.exe dist\Groupong
+    xcopy /y build\Chimeras.exe dist\Chimeras
 
-    xcopy /y SFML-2.5.0\bin\*.dll dist\Groupong
+    xcopy /y SFML-2.5.0\bin\*.dll dist\Chimeras
 
 
     cd dist
@@ -39,4 +39,4 @@ build_script:
     powershell -command "Expand-Archive -Path butler.zip -DestinationPath . -Force"
 
 
-    butler push Groupong studio-bakemono/groupong:windows
+    butler push Chimeras studio-bakemono/Chimeras:windows

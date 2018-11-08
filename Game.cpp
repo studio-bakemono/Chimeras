@@ -14,7 +14,7 @@ const uint16_t WINDOW_WIDTH = 800;
 const uint16_t WINDOW_HEIGHT = 600;
 const uint16_t FRAME_RATE = 60;
 
-Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "pong!",
+Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chimeras",
 		      // No resize button on our window
 		      sf::Style::Close,
 		      // (feature we're not using, feature we're not using, AntiAliasing level 8, more optional args are unset..)

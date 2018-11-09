@@ -11,7 +11,7 @@
 #include <iostream>
 
 const uint16_t WINDOW_WIDTH = 800;
-const uint16_t WINDOW_HEIGHT = 600;
+const uint16_t WINDOW_HEIGHT = 800;
 const uint16_t FRAME_RATE = 60;
 
 Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chimeras",
@@ -21,7 +21,7 @@ Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chimeras",
 		      sf::ContextSettings(0, 0, 8)
 		      ){
   window.setFramerateLimit(FRAME_RATE);
-  if(!font.loadFromFile("assets/AtariClassic-Regular.ttf")) {
+  if(!font.loadFromFile("assets/RockSalt-Regular.ttf")) {
     std::cerr << "Error loading font" << std::endl;
   }
   state = new MenuState(font);

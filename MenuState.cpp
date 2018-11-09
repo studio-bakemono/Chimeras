@@ -4,6 +4,9 @@
 
 #include "MenuState.hpp"
 
+#include "State.hpp"
+#include "Game.hpp"
+#include "TestState.hpp"
 
 MenuState::MenuState(sf::Font font) {
   //hello.setFont(font);
@@ -24,11 +27,12 @@ MenuState::~MenuState() {
 
 void MenuState::onEnter(Game* game) {
 
-  hello.setString("Hello, Sailor!");
+  hello.setString("Chimeras");
   hello.setFont(font);
-  hello.setCharacterSize(20);
+  hello.setCharacterSize(30);
  
-  hello.setPosition( sf::Vector2f(250,300) );
+  hello.setPosition(sf::Vector2f( game->window.getSize().x/2 - 10 - hello.getLocalBounds().width/2,
+				  game->window.getSize().y/2 - hello.getLocalBounds().height/2 ));
   
   
 }
@@ -41,6 +45,9 @@ void MenuState::onEvent() {
 
 State* MenuState::update(sf::RenderWindow& window) {
 
+
+  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) )
+    return new TestState(this->font);
 
   return nullptr;
   

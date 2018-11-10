@@ -47,5 +47,5 @@ void TestState::render(sf::RenderWindow& window) {
   window.draw(greeting);
 
   board.render(window);
-  
+  rectangle.render(window);  
 }

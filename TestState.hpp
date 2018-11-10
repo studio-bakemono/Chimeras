@@ -7,7 +7,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "State.hpp"
-
+#include "TestRectangle.hpp"
 #include "Board.hpp"
 
 // Forward delcaration to avoid circular headers
@@ -21,6 +21,7 @@ public:
   sf::Text greeting;
 
   Board board;
+  TestRectangle rectangle;
   
 public:
 

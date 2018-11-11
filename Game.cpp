@@ -10,9 +10,6 @@
 #include <cassert>
 #include <iostream>
 
-const uint16_t WINDOW_WIDTH = 800;
-const uint16_t WINDOW_HEIGHT = 800;
-const uint16_t FRAME_RATE = 60;
 
 Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chimeras",
 		      // No resize button on our window
@@ -26,6 +23,10 @@ Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chimeras",
   }
   state = new MenuState(font);
   state->onEnter(this);
+}
+
+Game::~Game() {
+
 }
 
 void Game::to_state(State *newstate){

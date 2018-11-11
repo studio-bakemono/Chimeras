@@ -6,6 +6,8 @@
 #include "Game.hpp"
 
 
+#include <iostream>
+
 TestState::TestState(sf::Font font) {
 
   this->font = font;
@@ -23,8 +25,17 @@ void TestState::onEnter(Game* game) {
   greeting.setCharacterSize(20);
   greeting.setPosition(0,0);
 
+  float boardWidth, boardHeight;
 
-  board = Board(8, 600, 600);
+  boardWidth = (3* game->WINDOW_WIDTH)/4.f;
+  boardHeight = (3* game->WINDOW_HEIGHT)/4.f;
+
+  
+  auto position = sf::Vector2f( game->WINDOW_WIDTH/2.f -boardWidth/2.f,
+				game->WINDOW_HEIGHT/2.f -boardHeight/2.f);
+  
+  
+  board = Board(game, position, 11, boardWidth, boardHeight);
   
   
 }
@@ -35,9 +46,6 @@ void TestState::onEvent() {
 
 State* TestState::update(sf::RenderWindow& window) {
 
-
-  
-  
   
   return nullptr;
 }

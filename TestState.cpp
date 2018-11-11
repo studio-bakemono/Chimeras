@@ -35,7 +35,7 @@ void TestState::onEnter(Game* game) {
 				game->WINDOW_HEIGHT/2.f -boardHeight/2.f);
   
   
-  board = Board(game, position, 11, boardWidth, boardHeight);
+  board = Board(game, position, 8, boardWidth, boardHeight);
   
   
 }

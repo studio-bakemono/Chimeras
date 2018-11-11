@@ -46,6 +46,7 @@ void TestState::onEvent() {
 
 State* TestState::update(sf::RenderWindow& window) {
 
+  board.update(window);
   
   return nullptr;
 }

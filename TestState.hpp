@@ -7,7 +7,6 @@
 #include <SFML/Graphics.hpp>
 
 #include "State.hpp"
-
 #include "Board.hpp"
 
 // Forward delcaration to avoid circular headers

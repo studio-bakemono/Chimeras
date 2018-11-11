@@ -6,6 +6,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <vector>
+
 // Forward declaration to avoid circular inclusions
 class Game;
 
@@ -20,7 +22,11 @@ public:
   
   sf::Vector2f position = sf::Vector2f(100, 100);
   
+  std::vector<std::vector<sf::FloatRect>> sectors;
+  std::vector<std::vector<sf::RectangleShape>> debugSectors;
 
+  
+  
 public:
   Board();
   Board(Game* game, int boardSize, float boardWidth, float boardHeight );

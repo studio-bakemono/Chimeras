@@ -5,6 +5,7 @@
 #include "TestState.hpp"
 #include "Game.hpp"
 
+//#include "Board.hpp"
 
 #include <iostream>
 
@@ -37,6 +38,12 @@ void TestState::onEnter(Game* game) {
   
   board = Board(game, position, 8, boardWidth, boardHeight);
   
+
+  testPiece.position = position;
+  //testPiece.rect.setPosition(position);
+  testPiece.rect.setSize(sf::Vector2f(board.sectorSize, board.sectorSize));
+  testPiece.size = sf::Vector2f(board.sectorSize, board.sectorSize);
+  testPiece.rect.setFillColor(sf::Color::Blue);
   
 }
 
@@ -47,6 +54,10 @@ void TestState::onEvent() {
 State* TestState::update(sf::RenderWindow& window) {
 
   board.update(window);
+  testPiece.update(window, board);
+  
+
+  
   
   return nullptr;
 }
@@ -56,5 +67,6 @@ void TestState::render(sf::RenderWindow& window) {
   window.draw(greeting);
 
   board.render(window);
+  testPiece.render(window);
   
 }

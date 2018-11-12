@@ -8,6 +8,7 @@
 
 #include "State.hpp"
 #include "Board.hpp"
+#include "Piece.hpp"
 
 // Forward delcaration to avoid circular headers
 
@@ -20,6 +21,8 @@ public:
   sf::Text greeting;
 
   Board board;
+  Piece testPiece;
+  
   
 public:
 

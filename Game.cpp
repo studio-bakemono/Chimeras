@@ -40,33 +40,31 @@ void Game::to_state(State *newstate){
 
 void Game::run(){
   while ( window.isOpen() ) {
-    if ( window.hasFocus() ) {
-      sf::Event event;
-      while (window.pollEvent(event)) {
-	if (event.type == sf::Event::Closed) {
+    sf::Event event;
+    while (window.pollEvent(event)) {
+	    if (event.type == sf::Event::Closed) {
 
-	  // if the window gets closed
-	  delete state;
-	  window.close();
-	  return;
+        // if the window gets closed
+        delete state;
+        window.close();
+        return;
 
-	} else if (event.type == sf::Event::KeyPressed) {
-	  // std::cout << "Key pressed!" << std::endl; 
-	}
+      } else if (event.type == sf::Event::KeyPressed) {
+        // std::cout << "Key pressed!" << std::endl; 
       }
-
-      // Update 
-      State *next = state->update(window);
-      if(next){
-	to_state(next);
-      }
-
-      // Render
-      window.clear();
-
-      state->render(window);
-                
-      window.display();
     }
+
+    // Update 
+    State *next = state->update(window);
+    if(next){
+      to_state(next);
+    }
+
+    // Render
+    window.clear();
+
+    state->render(window);
+              
+    window.display();
   }
 }

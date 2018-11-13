@@ -32,6 +32,8 @@ build_script:
     xcopy /y SFML-2.5.0\bin\*.dll dist\Chimeras
 
 
+deploy_script:
+- cmd: >-
     cd dist
 
     powershell -command "Invoke-WebRequest -uri https://broth.itch.ovh/butler/windows-amd64/14.13.0/archive/default -UseBasicParsing -OutFile butler.zip"

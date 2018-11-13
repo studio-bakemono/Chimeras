@@ -40,7 +40,6 @@ void Game::to_state(State *newstate){
 
 void Game::run(){
   while ( window.isOpen() ) {
-    if ( window.hasFocus() ) {
       sf::Event event;
       while (window.pollEvent(event)) {
 	if (event.type == sf::Event::Closed) {
@@ -67,6 +66,5 @@ void Game::run(){
       state->render(window);
                 
       window.display();
-    }
   }
 }

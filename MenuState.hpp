@@ -5,7 +5,7 @@
 #pragma once
 
 #include "State.hpp"
-#include "RectangleShape.hpp"
+#include <SFML/Graphics.hpp>
 
 // Forward declaration, gets included in MenuState.cpp to avoid circular inclusion
 class Game;
@@ -40,4 +40,4 @@ struct MenuItem{
   sf::RectangleShape rect;
   MenuState* menState;
     
-}
+};

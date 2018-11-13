@@ -5,6 +5,7 @@
 #pragma once
 
 #include "State.hpp"
+#include "RectangleShape.hpp"
 
 // Forward declaration, gets included in MenuState.cpp to avoid circular inclusion
 class Game;
@@ -33,3 +34,10 @@ public:
 
   
 };
+
+struct MenuItem{
+  std::string name;
+  sf::RectangleShape rect;
+  MenuState* menState;
+    
+}

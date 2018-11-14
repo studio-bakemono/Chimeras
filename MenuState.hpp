@@ -6,15 +6,15 @@
 
 #include "State.hpp"
 #include <SFML/Graphics.hpp>
-
+#include <vector>
 // Forward declaration, gets included in MenuState.cpp to avoid circular inclusion
 class Game;
-
+struct MenuItem;
 class MenuState : public State {
 public:
 
   sf::Text hello;
-
+  std::vector<MenuItem> menuitems;
   sf::Font font;
 
   
@@ -35,9 +35,10 @@ public:
   
 };
 
+//MenuItem struct for each button
 struct MenuItem{
   std::string name;
   sf::RectangleShape rect;
-  MenuState* menState;
+  State* menState;
     
 };

@@ -7,16 +7,18 @@
 #include "State.hpp"
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <iostream>
 // Forward declaration, gets included in MenuState.cpp to avoid circular inclusion
 class Game;
 struct MenuItem;
+const int MenuLength = 2;
 class MenuState : public State {
 public:
 
   sf::Text hello;
   std::vector<MenuItem> menuitems;
   sf::Font font;
-
+  int selected = 0;
   
 public:
 

@@ -27,7 +27,7 @@ public:
   
   void onEnter(Game* game);
 
-  void onEvent();
+  void onEvent(sf::Event event);
   
   State* update(sf::RenderWindow& window);
 

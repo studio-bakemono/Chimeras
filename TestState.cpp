@@ -47,7 +47,7 @@ void TestState::onEnter(Game* game) {
   
 }
 
-void TestState::onEvent() {
+void TestState::onEvent(sf::Event event) {
 
 }
 

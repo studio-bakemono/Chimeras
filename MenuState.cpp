@@ -43,12 +43,14 @@ void MenuState::onEnter(Game* game) {
   sf::RectangleShape option1rect;
   option1rect.setSize(sf::Vector2f(100,50));
   option1rect.setOutlineColor(sf::Color::Red);
+  option1rect.setFillColor(sf::Color::Red);
   option1rect.setOutlineThickness(5);
   option1rect.setPosition(sf::Vector2f( game->window.getSize().x/2 - 10 - option1rect.getLocalBounds().width/2, game->window.getSize().y/2  + 100));
   option1.rect = option1rect;
   sf::RectangleShape option2rect;
   option2rect.setSize(sf::Vector2f(100,50));
   option2rect.setOutlineColor(sf::Color::Red);
+  option2rect.setFillColor(sf::Color::Black);
   option2rect.setOutlineThickness(5);
   option2rect.setPosition(sf::Vector2f( game->window.getSize().x/2 - 10 - option2rect.getLocalBounds().width/2, game->window.getSize().y/2 + 200));
   option2.rect = option2rect;
@@ -61,20 +63,8 @@ void MenuState::onEnter(Game* game) {
 }
 
 
-void MenuState::onEvent() {
-
-}
-
-
-State* MenuState::update(sf::RenderWindow& window) {
-
-  
-  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) ){
-    
-  
-    return menuitems[selected].menState;
-    std::cout << "Entering state" <<std::endl;
-  }
+void MenuState::onEvent(sf::Event event) {
+std::cout << "onEvent" <<std::endl;
   //Cycle through the possible states
   if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
     menuitems[selected].rect.setFillColor(sf::Color::Black);
@@ -87,9 +77,22 @@ State* MenuState::update(sf::RenderWindow& window) {
     selected++;
     selected = (selected%MenuLength + MenuLength)%MenuLength;
     menuitems[selected].rect.setFillColor(sf::Color::Red);
-
+    
     std::cout << "Upkey pressed, in state " << selected << std::endl;
   }
+}
+
+
+State* MenuState::update(sf::RenderWindow& window) {
+
+  
+  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) ){
+    
+  
+    return menuitems[selected].menState;
+    std::cout << "Entering state" <<std::endl;
+  }
+  
   
   return nullptr;
   

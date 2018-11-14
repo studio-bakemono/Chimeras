@@ -66,13 +66,13 @@ void MenuState::onEnter(Game* game) {
 void MenuState::onEvent(sf::Event event) {
 std::cout << "onEvent" <<std::endl;
   //Cycle through the possible states
-  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+  if ( (event.type == sf::Event::KeyPressed)  && (event.key.code == sf::Keyboard::Down)){
     menuitems[selected].rect.setFillColor(sf::Color::Black);
     selected = (selected+1)%MenuLength;
     std::cout << "Downkey pressed, in state " << selected << std::endl;
     menuitems[selected].rect.setFillColor(sf::Color::Red);
   }
-  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+  if ( (event.type == sf::Event::KeyPressed)  && (event.key.code == sf::Keyboard::Up)){
     menuitems[selected].rect.setFillColor(sf::Color::Black);
     selected++;
     selected = (selected%MenuLength + MenuLength)%MenuLength;

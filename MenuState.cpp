@@ -40,20 +40,18 @@ void MenuState::onEnter(Game* game) {
   MenuItem option2;
   option1.name = "Option 1";
   option2.name = "Option 2";
-  sf::RectangleShape option1rect;
-  option1rect.setSize(sf::Vector2f(100,50));
-  option1rect.setOutlineColor(sf::Color::Red);
-  option1rect.setFillColor(sf::Color::Red);
-  option1rect.setOutlineThickness(5);
-  option1rect.setPosition(sf::Vector2f( game->window.getSize().x/2 - 10 - option1rect.getLocalBounds().width/2, game->window.getSize().y/2  + 100));
-  option1.rect = option1rect;
-  sf::RectangleShape option2rect;
-  option2rect.setSize(sf::Vector2f(100,50));
-  option2rect.setOutlineColor(sf::Color::Red);
-  option2rect.setFillColor(sf::Color::Black);
-  option2rect.setOutlineThickness(5);
-  option2rect.setPosition(sf::Vector2f( game->window.getSize().x/2 - 10 - option2rect.getLocalBounds().width/2, game->window.getSize().y/2 + 200));
-  option2.rect = option2rect;
+
+  option1.rect.setSize(sf::Vector2f(100,50));
+  option1.rect.setOutlineColor(sf::Color::Red);
+  option1.rect.setFillColor(sf::Color::Red);
+  option1.rect.setOutlineThickness(5);
+  option1.rect.setPosition(sf::Vector2f( game->window.getSize().x/2 - 10 - option1.rect.getLocalBounds().width/2, game->window.getSize().y/2  + 100));
+
+  option2.rect.setSize(sf::Vector2f(100,50));
+  option2.rect.setOutlineColor(sf::Color::Red);
+  option2.rect.setFillColor(sf::Color::Black);
+  option2.rect.setOutlineThickness(5);
+  option2.rect.setPosition(sf::Vector2f( game->window.getSize().x/2 - 10 - option2.rect.getLocalBounds().width/2, game->window.getSize().y/2 + 200));
   
   option1.menState =  new TestState(this->font);
   option2.menState =  new TestState(this->font);

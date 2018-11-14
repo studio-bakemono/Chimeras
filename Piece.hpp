@@ -22,6 +22,8 @@ public:
 public:
   Piece();
   ~Piece();
+
+  void snapToGrid(sf::RenderWindow& window, Board& board);
   
   void update(sf::RenderWindow& window, Board& board);
   void render(sf::RenderWindow& window);

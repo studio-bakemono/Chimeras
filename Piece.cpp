@@ -21,8 +21,8 @@ Piece::~Piece() {
 }
 
 
-void Piece::update(sf::RenderWindow& window, Board& board) {
-  
+void Piece::snapToGrid(sf::RenderWindow& window, Board& board) {
+
   this->rect.setPosition(this->position);
   
   this->collider.top = this->position.y;
@@ -50,7 +50,7 @@ void Piece::update(sf::RenderWindow& window, Board& board) {
 
   }
   else if ( beingMoved && !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)
-	      ) {
+	    ) {
 
     if (snapRect) {
       this->position.x = snapRect->left;
@@ -66,8 +66,14 @@ void Piece::update(sf::RenderWindow& window, Board& board) {
 
   /*
     NOTE: The movement MUST be separated as above in order to work correctly.
-          Toy with it at your own risk.
-   */
+    Toy with it at your own risk.
+  */
+  
+}
+
+void Piece::update(sf::RenderWindow& window, Board& board) {
+  
+  snapToGrid(window, board);
   
 }
 

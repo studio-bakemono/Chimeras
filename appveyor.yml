@@ -13,6 +13,7 @@ build_script:
 
     powershell -command "Invoke-WebRequest -uri https://www.sfml-dev.org/files/SFML-2.5.0-windows-gcc-7.3.0-mingw-64-bit.zip -UseBasicParsing -OutFile SFML.zip"
 
+
     powershell -command "Expand-Archive -Path SFML.zip -DestinationPath . -Force"
 
 
@@ -20,26 +21,35 @@ build_script:
 
     cmake -G "MinGW Makefiles" ..
 
+
     mingw32-make
+
 
     cd ..
 
 
     mkdir dist\Chimeras
 
-    xcopy /y build\Chimeras.exe dist\Chimeras
+    xcopy /y build\* dist\Chimeras
 
     xcopy /y SFML-2.5.0\bin\*.dll dist\Chimeras
 artifacts:
 - path: dist\Chimeras
   name: Chimeras
-deploy_script:
+before_deploy:
 - cmd: >-
     cd dist
 
+
     powershell -command "Invoke-WebRequest -uri https://broth.itch.ovh/butler/windows-amd64/14.13.0/archive/default -UseBasicParsing -OutFile butler.zip"
+
 
     powershell -command "Expand-Archive -Path butler.zip -DestinationPath . -Force"
 
 
     butler push Chimeras studio-bakemono/Chimeras:windows
+deploy:
+- provider: Environment
+  name: itch.io
+  on:
+    branch: master

@@ -43,23 +43,18 @@ void TestState::onEnter(Game* game) {
   //testPiece.rect.setPosition(position);
   testPiece.rect.setSize(sf::Vector2f(board.sectorSize, board.sectorSize));
   testPiece.size = sf::Vector2f(board.sectorSize, board.sectorSize);
-  testPiece.rect.setFillColor(sf::Color::Blue);
 
   testPiece.onEnter(board);
   
 }
 
 void TestState::onEvent(sf::Event event) {
-
+  testPiece.onEvent(event, board);
 }
 
 State* TestState::update(sf::RenderWindow& window) {
 
   board.update(window);
-  testPiece.update(window, board);
-  
-
-  
   
   return nullptr;
 }

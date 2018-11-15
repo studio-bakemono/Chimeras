@@ -116,14 +116,13 @@ void Board::update(sf::RenderWindow& window) {
   for (int i = 0; i < boardSize; i++) {
     for (int r = 0; r < boardSize; r++) {
 
-      if (sectors[i][r].contains(sf::Mouse::getPosition(window).x,
-				 sf::Mouse::getPosition(window).y )) {
-
+      if (sectors[i][r].contains((sf::Vector2f)sf::Mouse::getPosition(window))) {
+/*
 	
 	std::cout << "Mouse is in sector [" << i+1 << "," << r+1 << "]" <<
 	  "at posiiton: " << sf::Mouse::getPosition(window).x << " "
 		  << sf::Mouse::getPosition(window).y << std::endl;
-	
+*/	
       }
     }
   }

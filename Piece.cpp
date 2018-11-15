@@ -9,72 +9,51 @@
 
 Piece::Piece() {
 
-  
+  rect.setFillColor(sf::Color::Blue);  
   rect.setSize(this->size);
   rect.setPosition(this->position); 
-  
+  collider.top = this->position.y;
+  collider.left = this->position.x;
+  collider.width = this->size.x;
+  collider.height = this->size.y;  
 }
 
 
 Piece::~Piece() {
-  snapRect = nullptr;
 }
 
+void Piece::onEvent(sf::Event event, Board &board) {
+  if ( event.type == sf::Event::MouseButtonPressed
+    && event.mouseButton.button == sf::Mouse::Button::Left) {
+    if ( beingMoved ) {
+      for ( int i = 0; i < board.sectors.size(); i++ ) {
+        for ( int r = 0; r < board.sectors[i].size(); r++ ) {
+          if ( board.sectors[i][r].contains(sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
+            sf::FloatRect snapRect = board.sectors[i][r];
 
-void Piece::snapToGrid(sf::RenderWindow& window, Board& board) {
+            this->position.x = snapRect.left;
+            this->position.y = snapRect.top;
 
-  this->rect.setPosition(this->position);
-  
-  this->collider.top = this->position.y;
-  this->collider.left = this->position.x;
-  this->collider.width = this->size.x;
-  this->collider.height = this->size.y;
+            this->rect.setPosition(this->position);
 
-  
-  for ( int i = 0; i < board.sectors.size(); i++ ) {
-    for ( int r = 0; r < board.sectors[i].size(); r++ ) {
-      
-      if ( board.sectors[i][r].contains((sf::Vector2f)sf::Mouse::getPosition(window))
-	   && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) ) {
+            collider.top = this->position.y;
+            collider.left = this->position.x;
+            collider.width = this->size.x;
+            collider.height = this->size.y;  
 
-	snapRect = &board.sectors[i][r];
-	
+            rect.setFillColor(sf::Color::Blue);
+            beingMoved=false;
+
+            return;
+          }
+        }
       }
+    }else if ( collider.contains( sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
+      // Pick piece up
+      beingMoved=true;
+      rect.setFillColor(sf::Color::Green);
     }
   }
-
-  if (collider.contains((sf::Vector2f)sf::Mouse::getPosition(window))
-      && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-	
-    beingMoved = true;
-
-  }
-  else if ( beingMoved && !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)
-	    ) {
-
-    if (snapRect) {
-      this->position.x = snapRect->left;
-      this->position.y = snapRect->top;
-      beingMoved = false;
-    }  
-  }
-  
-  if (beingMoved && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) ) {
-    this->position = (sf::Vector2f)sf::Mouse::getPosition(window) - size/2.f;
-  }
-  
-
-  /*
-    NOTE: The movement MUST be separated as above in order to work correctly.
-    Toy with it at your own risk.
-  */
-  
-}
-
-void Piece::update(sf::RenderWindow& window, Board& board) {
-  
-  snapToGrid(window, board);
-  
 }
 
 void Piece::render(sf::RenderWindow& window) {

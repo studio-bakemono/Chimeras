@@ -17,15 +17,12 @@ public:
   sf::FloatRect collider;
   
   bool beingMoved = false;
-  sf::FloatRect* snapRect = nullptr;
   
 public:
   Piece();
   ~Piece();
 
-  void snapToGrid(sf::RenderWindow& window, Board& board);
-  
-  void update(sf::RenderWindow& window, Board& board);
+  void onEvent(sf::Event event, Board& board);
   void render(sf::RenderWindow& window);
   
   

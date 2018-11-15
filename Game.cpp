@@ -49,8 +49,8 @@ void Game::run(){
         window.close();
         return;
 
-      } else if (event.type == sf::Event::KeyPressed) {
-        // std::cout << "Key pressed!" << std::endl; 
+      } else {
+        state->onEvent(event);
       }
     }
 
@@ -58,6 +58,7 @@ void Game::run(){
     State *next = state->update(window);
     if(next){
       to_state(next);
+      continue;
     }
 
     // Render

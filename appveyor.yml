@@ -33,6 +33,14 @@ build_script:
     mkdir dist\Chimeras\assets
 
 
+    xcopy /y C:\mingw-w64\x86_64-7.3.0-posix-seh-rt_v5-rev0\mingw64\bin\libgcc_s_seh-1.dll dist\Chimeras
+
+    xcopy /y C:\mingw-w64\x86_64-7.3.0-posix-seh-rt_v5-rev0\mingw64\bin\libstdc++-6.dll dist\Chimeras
+
+    xcopy /y C:\mingw-w64\x86_64-7.3.0-posix-seh-rt_v5-rev0\mingw64\bin\libwinpthread-1.dll dist\Chimeras
+
+
+
     xcopy /y build\Chimeras.exe dist\Chimeras
 
     xcopy /y assets\* dist\Chimeras\assets

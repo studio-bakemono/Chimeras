@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 
 set (CMAKE_CXX_STANDARD 11)
+set(CMAKE_EXE_LINKER_FLAGS " -static")
 
 project(Chimeras)
 
@@ -15,7 +16,7 @@ file(GLOB SOURCES "*.cpp")
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
 add_executable(Chimeras ${SOURCES} )
-target_link_libraries(Chimeras sfml-graphics sfml-audio)
+target_link_libraries(Chimeras sfml-graphics sfml-audio -static-libgcc -static-libstdc++)
 
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 

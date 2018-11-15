@@ -30,7 +30,12 @@ build_script:
 
     mkdir dist\Chimeras
 
+    mkdir dist\Chimeras\assets
+
+
     xcopy /y build\Chimeras.exe dist\Chimeras
+
+    xcopy /y assets\* dist\Chimeras\assets
 
     xcopy /y SFML-2.5.0\bin\*.dll dist\Chimeras
 artifacts:

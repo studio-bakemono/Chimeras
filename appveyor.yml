@@ -30,8 +30,9 @@ build_script:
     xcopy /y build\Chimeras.exe dist\Chimeras
 
     xcopy /y SFML-2.5.0\bin\*.dll dist\Chimeras
-
-
+artifacts:
+- path: dist\Chimeras
+  name: Chimeras
 deploy_script:
 - cmd: >-
     cd dist

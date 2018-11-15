@@ -30,7 +30,7 @@ build_script:
 
     mkdir dist\Chimeras
 
-    xcopy /y build\* dist\Chimeras
+    xcopy /y build\Chimeras.exe dist\Chimeras
 
     xcopy /y SFML-2.5.0\bin\*.dll dist\Chimeras
 artifacts:

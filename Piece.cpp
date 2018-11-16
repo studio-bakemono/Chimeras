@@ -15,6 +15,8 @@ Piece::Piece() {
   rect.setFillColor(sf::Color::Blue);  
   rect.setSize(size);
   // Test knight code
+  moveset.horizontal = false;
+  moveset.vertical = false;
   moveset.diagonal = true;
   moveset.offsets.push_back(sf::Vector2i(1,2));
 
@@ -123,7 +125,6 @@ void Piece::render(sf::RenderWindow& window) {
     distributePosition();
   }
   window.draw(rect);
-  
 }
 
 void Piece::distributePosition(){

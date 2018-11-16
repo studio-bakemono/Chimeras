@@ -37,17 +37,13 @@ public:
   ~Piece();
 
   void consumeMoveset(Moveset moves, bool XORMode);
-
-  sf::FloatRect& getOriginRect(sf::RenderWindow& window, Board& board);
-
   void snapToSector(sf::Vector2i sector, Board& board);
-  void snapToOrigin(sf::RenderWindow& window, Board& board);
-  void snapToGrid(sf::RenderWindow& window, Board& board);
 
   void onEnter(Board& board);
   void update(sf::RenderWindow& window, Board& board);
+  void onEvent(sf::Event event, Board& board);
   void render(sf::RenderWindow& window);
-  
+  void distributePosition();  
   
 
 };

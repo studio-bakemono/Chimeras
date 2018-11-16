@@ -39,12 +39,11 @@ void TestState::onEnter(Game* game) {
   board = Board(game, position, 8, boardWidth, boardHeight);
   
 
-  testPiece.position = position;
+  testPiece.onEnter(board);
   testPiece.distributePosition();
   testPiece.rect.setSize(sf::Vector2f(board.sectorSize, board.sectorSize));
   testPiece.size = sf::Vector2f(board.sectorSize, board.sectorSize);
 
-  testPiece.onEnter(board);
   
 }
 

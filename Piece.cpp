@@ -63,18 +63,6 @@ void Piece::onEvent(sf::Event event, Board &board) {
                   << i <<", "<< r << "\n"
                   << "m: "
                   << m.x <<", "<< m.y << std::endl;
-              if ( sf::Vector2i(i,r) == sectorPosition+m ) {
-                sf::FloatRect snapRect = board.sectors[r][i];
-
-                position.x = snapRect.left;
-                position.y = snapRect.top;
-                distributePosition();
-
-                sectorPosition += m;
-                break;
-              } else {
-                std::cout << "SectorPosition: ";
-                std::cout << sectorPosition.x<<","<<sectorPosition.y << "\n"; 
               }
             }
 

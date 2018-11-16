@@ -27,6 +27,8 @@ public:
 
   
   sf::Vector2f origin;
+
+  void dropPiece(Board &board, sf::Vector2f mousepos);
   
 public:
   Piece();
@@ -40,7 +42,7 @@ public:
   void update(sf::RenderWindow& window, Board& board);
   void onEvent(sf::Event event, Board& board);
   void render(sf::RenderWindow& window);
-  void distributePosition();  
+  void distributePosition();
   
 
 };

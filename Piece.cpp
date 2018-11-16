@@ -43,60 +43,61 @@ void Piece::snapToSector(sf::Vector2i sector, Board& board) {
 
 bool Piece::validateMove(Board &board, sf::Vector2i pos){
 
-	// Check infinite directional bools 
-	
-	if (moveset.horizontal) {
-	  if (sectorPosition.y == pos.y) {
-	    std::cout << "horizontal\n";
-	    return true;
-	  }
-	}
-	else if (moveset.vertical) {
-	  if (sectorPosition.x == pos.x) {
-	    std::cout << "vertical\n";
-	    return true;
-	  }
-	}
-	else if (moveset.diagonal) {
-	  if (abs(sectorPosition.x - pos.x) ==
-	      abs(sectorPosition.y - pos.y)) {
+  // Check infinite directional bools 	
 
-	    std::cout << "diagonal\n";
-	    return true;
-	  }
-	}
-	// Check offsets for valid moves
-            for (auto m : moveset.offsets) {  
-              if ( pos == sectorPosition+m ) {
-                return true;
-              }
-            }
-  return false;
+  if (moveset.horizontal) {
+    if (sectorPosition.y == pos.y) {
+      return true;
+    }
+  }
+  if (moveset.vertical) {
+    if (sectorPosition.x == pos.x) {
+      return true;
+    }
+  }
+  if (moveset.diagonal) {
+    if (abs(sectorPosition.x - pos.x) ==
+        abs(sectorPosition.y - pos.y)) {
+      return true;
+    }
+  }
+
+  // Check offsets for valid moves
+  for (auto m : moveset.offsets) {  
+    if ( pos == sectorPosition+m ) {
+      return true;
+    }
+ }
+ return false;
+}
+
+void Piece::dropPiece(Board &board, sf::Vector2f mousepos)
+{
+  for ( int i = 0; i < board.sectors.size(); i++ ) {
+    for ( int r = 0; r < board.sectors[i].size(); r++ ) {
+      if ( board.sectors[r][i].contains(mousepos) ) {
+        if(validateMove(board, sf::Vector2i(i+1, r+1))){
+          sf::FloatRect snapRect = board.sectors[r][i];
+          sectorPosition=sf::Vector2i(i+1, r+1);
+          position.x = snapRect.left;
+          position.y = snapRect.top;
+          distributePosition();
+          return;
+        }
+      }
+    }
+  }
+  if (dragndrop){
+    position=origin;
+    distributePosition();
+  }
 }
 
 void Piece::onEvent(sf::Event event, Board &board) {
   if ( beingMoved
     && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
     && event.mouseButton.button == sf::Mouse::Button::Left) {
-    for ( int i = 0; i < board.sectors.size(); i++ ) {
-      for ( int r = 0; r < board.sectors[i].size(); r++ ) {
-        if ( board.sectors[r][i].contains(sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
-          if(validateMove(board, sf::Vector2i(i+1, r+1))){
-            sf::FloatRect snapRect = board.sectors[r][i];
-            sectorPosition=sf::Vector2i(i+1, r+1);
-            position.x = snapRect.left;
-            position.y = snapRect.top;
-            distributePosition();
-            goto foundPiece;
-          }
-        }
-      }
-    }
-    if (dragndrop){
-      position=origin;
-      distributePosition();
-    }
-    foundPiece:
+    dropPiece(board, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
     rect.setFillColor(sf::Color::Blue);
     board.resetColor();
     beingMoved=false;

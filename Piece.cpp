@@ -12,12 +12,30 @@ Piece::Piece() {
   
   rect.setSize(this->size);
   rect.setPosition(this->position); 
+
+
+  // TEST CODE
+  /*
+  auto moves = { sf::Vector2i(0,1) };
+  moveset.offsets = moves;
+  */
+  
   
 }
 
 
 Piece::~Piece() {
   snapRect = nullptr;
+}
+
+
+
+void Piece::consumeMoveset(Moveset moves, bool XORMode) {
+
+  if (!XORMode) {
+    this->moveset = this->moveset || moves;
+  }
+  
 }
 
 
@@ -72,8 +90,13 @@ void Piece::snapToGrid(sf::RenderWindow& window, Board& board) {
 }
 
 void Piece::update(sf::RenderWindow& window, Board& board) {
+
+
   
   snapToGrid(window, board);
+
+  
+  
   
 }
 

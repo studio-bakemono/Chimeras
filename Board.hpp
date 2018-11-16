@@ -19,6 +19,7 @@ public:
   int boardSize = 8;
   int boardWidth, boardHeight;
   float sectorSize;
+
   
   sf::Vector2f position = sf::Vector2f(100, 100);
   

@@ -44,6 +44,8 @@ void TestState::onEnter(Game* game) {
   testPiece.rect.setSize(sf::Vector2f(board.sectorSize, board.sectorSize));
   testPiece.size = sf::Vector2f(board.sectorSize, board.sectorSize);
   testPiece.rect.setFillColor(sf::Color::Blue);
+
+  testPiece.onEnter(board);
   
 }
 

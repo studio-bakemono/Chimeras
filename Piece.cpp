@@ -92,6 +92,7 @@ void Piece::onEvent(sf::Event event, Board &board) {
             distributePosition();
           }
           rect.setFillColor(sf::Color::Blue);
+          board.resetColor();
           beingMoved=false;
 
           return;
@@ -107,6 +108,7 @@ void Piece::onEvent(sf::Event event, Board &board) {
     beingMoved=true;
     rect.setFillColor(sf::Color::Green);
     origin=position;
+    board.colorWith(this);
   }
 }
 

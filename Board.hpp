@@ -8,8 +8,9 @@
 
 #include <vector>
 
-// Forward declaration to avoid circular inclusions
+// Forward declarations to avoid circular inclusions
 class Game;
+class Piece;
 
 class Board {
 
@@ -36,6 +37,7 @@ public:
 
   ~Board();
 
+  void colorWith(Piece *piece);
   void resetColor();
   void update(sf::RenderWindow& window);
   void render(sf::RenderWindow& window);

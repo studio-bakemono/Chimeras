@@ -3,6 +3,7 @@
 */
 #include "Board.hpp"
 #include "Game.hpp"
+#include "Piece.hpp"
 
 #include <iostream>
 
@@ -102,14 +103,29 @@ Board::~Board() {
 
 }
 
+void Board::colorWith(Piece *piece) {
+  // Draw the chessboard checkered pattern
+  sf::Color colors[] = {
+    sf::Color::White,
+    sf::Color::Black,
+    sf::Color(55,255,55),
+    sf::Color(0,100,0),
+  };
+  for (int i = 0; i < boardSize; i++) {
+    for (int r = 0; r < boardSize; r++) {
+      debugSectors[r][i].setFillColor(colors[(r%2^i%2)+2*(piece->validateMove(*this, sf::Vector2i(i+1,r+1)))]);
+    }
+  }
+}
+
 void Board::resetColor() {
   // Draw the chessboard checkered pattern
   for (int i = 0; i < boardSize; i++) {
     for (int r = 0; r < boardSize; r++) {
       if ( (r%2^i%2)==0)
-        debugSectors[i][r].setFillColor(sf::Color::White);
+        debugSectors[r][i].setFillColor(sf::Color::White);
       else
-        debugSectors[i][r].setFillColor(sf::Color::Black);
+        debugSectors[r][i].setFillColor(sf::Color::Black);
     }
   }
 }

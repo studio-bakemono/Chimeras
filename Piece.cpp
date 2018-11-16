@@ -14,6 +14,7 @@ Piece::Piece() {
   rect.setFillColor(sf::Color::Blue);  
   rect.setSize(size);
   // Test knight code
+  moveset.diagonal = true;
   moveset.offsets.push_back(sf::Vector2i(1,2));
 
   collider.width = size.x;
@@ -46,15 +47,33 @@ void Piece::onEvent(sf::Event event, Board &board) {
       for ( int i = 0; i < board.sectors.size(); i++ ) {
         for ( int r = 0; r < board.sectors[i].size(); r++ ) {
           if ( board.sectors[r][i].contains(sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
+            bool foundValidMove = false;
+
+	// Check infinite directional bools 
+	
+	if (moveset.horizontal) {
+	  if (sectorPosition.y == snapRectSector.y) {
+	    std::cout << "horizontal\n";
+	    foundValidMove = true;
+	  }
+	}
+	else if (moveset.vertical) {
+	  if (sectorPosition.x == snapRectSector.x) {
+	    std::cout << "vertical\n";
+	    foundValidMove = true;
+	  }
+	}
+	else if (moveset.diagonal) {
+	  if (sectorPosition.x != snapRectSector.x &&
+	      sectorPosition.y != snapRectSector.y) {
+
+	    std::cout << "diagonal\n";
+	    foundValidMove = true;
+	  }
+	}
+	// Check offsets for valid moves
             for (auto m : moveset.offsets) {  
               if ( sf::Vector2i(i+1, r+1) == sectorPosition+m ) {
-                sf::FloatRect snapRect = board.sectors[r][i];
-
-                position.x = snapRect.left;
-                position.y = snapRect.top;
-                distributePosition();
-
-                sectorPosition += m;
                 break;
               } else {
                 std::cout << "SectorPosition: "
@@ -65,7 +84,13 @@ void Piece::onEvent(sf::Event event, Board &board) {
                   << m.x <<", "<< m.y << std::endl;
               }
             }
-
+            if(foundValidMove){
+                sf::FloatRect snapRect = board.sectors[r][i];
+                sectorPosition=sf::Vector2i(r+1,i+1);
+                position.x = snapRect.left;
+                position.y = snapRect.top;
+                distributePosition();
+            }
             rect.setFillColor(sf::Color::Blue);
             beingMoved=false;
 

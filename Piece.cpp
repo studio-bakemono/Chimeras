@@ -88,7 +88,6 @@ void Piece::onEnter(Board& board) {
 }
 
 void Piece::update(sf::RenderWindow& window, Board& board) {
-
 }
 
 void Piece::render(sf::RenderWindow& window) {

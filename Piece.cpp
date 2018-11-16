@@ -87,18 +87,19 @@ void Piece::onEvent(sf::Event event, Board &board) {
             position.x = snapRect.left;
             position.y = snapRect.top;
             distributePosition();
-          }else if (dragndrop){
-            position = origin;
-            distributePosition();
+            goto foundPiece;
           }
-          rect.setFillColor(sf::Color::Blue);
-          board.resetColor();
-          beingMoved=false;
-
-          return;
         }
       }
     }
+    if (dragndrop){
+      position=origin;
+      distributePosition();
+    }
+    foundPiece:
+    rect.setFillColor(sf::Color::Blue);
+    board.resetColor();
+    beingMoved=false;
   }
   if ((!beingMoved)
     && event.type == sf::Event::MouseButtonPressed

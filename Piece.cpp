@@ -16,6 +16,7 @@ Piece::Piece() {
   rect.setPosition(this->position); 
 
   // Test knight code
+  moveset.diagonal = true;
   moveset.offsets.push_back(sf::Vector2i(1,2));
 
   
@@ -90,7 +91,40 @@ void Piece::snapToGrid(sf::RenderWindow& window, Board& board) {
 
 	std::cout << "DEBUG: snapRect pos["<<snapRect->left<<","<<snapRect->top<<"]"<< std::endl;
 	std::cout << "DEBUG: snapRect Sector ["<<snapRectSector.x<<","<<snapRectSector.y<<"]"<< std::endl;
+
+	// Check infinite directional bools 
 	
+	if (moveset.horizontal) {
+	  if (sectorPosition.y == snapRectSector.y) {
+	    std::cout << "horizontal\n";
+	    this->position.x = snapRect->left;
+	    this->position.y = snapRect->top;
+	    foundValidMove = true;
+	    sectorPosition = snapRectSector;
+	  }
+	}
+	else if (moveset.vertical) {
+	  if (sectorPosition.x == snapRectSector.x) {
+	    std::cout << "vertical\n";
+	    this->position.x = snapRect->left;
+	    this->position.y = snapRect->top;
+	    foundValidMove = true;
+	    sectorPosition = snapRectSector;
+	  }
+	}
+	else if (moveset.diagonal) {
+	  if (sectorPosition.x != snapRectSector.x &&
+	      sectorPosition.y != snapRectSector.y) {
+
+	    std::cout << "diagonal\n";
+	    this->position.x = snapRect->left;
+	    this->position.y = snapRect->top;
+	    foundValidMove = true;
+	    sectorPosition = snapRectSector;
+	  }
+	}
+
+	// Check offsets for valid moves
 	for (auto m : moveset.offsets) {
 	  
 	  if ( snapRectSector == sectorPosition+m ) {
@@ -107,7 +141,7 @@ void Piece::snapToGrid(sf::RenderWindow& window, Board& board) {
 	}
       }
      
-      // If we couldn't find an offset to match 
+      // If we couldn't find a valid move, snap piece back to origin 
       if (!foundValidMove)
 	snapToOrigin(window, board);
 

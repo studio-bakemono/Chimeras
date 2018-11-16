@@ -48,7 +48,7 @@ public:
   void update(sf::RenderWindow& window, Board& board);
   void onEvent(sf::Event event, Board& board);
   void render(sf::RenderWindow& window);
-  
+  void distributePosition();  
   
 
 };

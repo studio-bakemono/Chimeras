@@ -12,15 +12,14 @@
 Piece::Piece() {
 
   rect.setFillColor(sf::Color::Blue);  
-  rect.setSize(this->size);
+  rect.setSize(size);
   // Test knight code
   moveset.offsets.push_back(sf::Vector2i(1,2));
 
-  
-  collider.top = this->position.y;
-  collider.left = this->position.x;
-  collider.width = this->size.x;
-  collider.height = this->size.y;  
+  collider.width = size.x;
+  collider.height = size.y;
+
+  distributePosition();
 }
 
 
@@ -117,13 +116,11 @@ void Piece::onEvent(sf::Event event, Board &board) {
             for (auto m : moveset.offsets) {  
               if ( sf::Vector2i(i,r) == sectorPosition+m ) {
                 sf::FloatRect snapRect = board.sectors[r][i];
-                this->position.x = snapRect.left;
-                this->position.y = snapRect.top;
 
-                this->rect.setPosition(this->position);
+                position.x = snapRect.left;
+                position.y = snapRect.top;
+                distributePosition();
 
-                collider.top = this->position.y;
-                collider.left = this->position.x;
                 sectorPosition += m;
                 break;
               } else {
@@ -170,4 +167,10 @@ void Piece::update(sf::RenderWindow& window, Board& board) {
 void Piece::render(sf::RenderWindow& window) {
   window.draw(rect);
   
+}
+
+void Piece::distributePosition(){
+  rect.setPosition(position); 
+  collider.top = position.y;
+  collider.left = position.x;
 }

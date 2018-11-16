@@ -91,24 +91,27 @@ Board::Board(Game* game, sf::Vector2f position,
 					   position.y+sectorSize*i ));
       
       debugSectors[i][r].setSize(sf::Vector2f(sectorSize, sectorSize));
-
-      // Draw the chessboard checkered pattern
-      if ( r%2!=0 && i%2!=0)
-	debugSectors[i][r].setFillColor(sf::Color::White);
-      else if (r%2==0 && i%2==0)
-	debugSectors[i][r].setFillColor(sf::Color::White);
-      else
-	debugSectors[i][r].setFillColor(sf::Color::Black);
       
     }
    }
-
-  
+   resetColor();  
   
 }
 
 Board::~Board() {
 
+}
+
+void Board::resetColor() {
+  // Draw the chessboard checkered pattern
+  for (int i = 0; i < boardSize; i++) {
+    for (int r = 0; r < boardSize; r++) {
+      if ( (r%2^i%2)==0)
+        debugSectors[i][r].setFillColor(sf::Color::White);
+      else
+        debugSectors[i][r].setFillColor(sf::Color::Black);
+    }
+  }
 }
 
 void Board::update(sf::RenderWindow& window) {

@@ -35,7 +35,8 @@ public:
 	int boardSize, float boardWidth, float boardHeight );
 
   ~Board();
-  
+
+  void resetColor();
   void update(sf::RenderWindow& window);
   void render(sf::RenderWindow& window);
   

@@ -26,7 +26,6 @@ Piece::Piece() {
 
 
 Piece::~Piece() {
-  originRect = nullptr;
 }
 
 void Piece::consumeMoveset(Moveset moves, bool XORMode) {
@@ -74,31 +73,38 @@ bool Piece::validateMove(Board &board, sf::Vector2i pos){
 }
 
 void Piece::onEvent(sf::Event event, Board &board) {
-  if ( event.type == sf::Event::MouseButtonPressed
+  if ( beingMoved
+    && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
     && event.mouseButton.button == sf::Mouse::Button::Left) {
-    if ( beingMoved ) {
-      for ( int i = 0; i < board.sectors.size(); i++ ) {
-        for ( int r = 0; r < board.sectors[i].size(); r++ ) {
-          if ( board.sectors[r][i].contains(sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
-            if(validateMove(board, sf::Vector2i(i+1, r+1))){
-                sf::FloatRect snapRect = board.sectors[r][i];
-                sectorPosition=sf::Vector2i(i+1, r+1);
-                position.x = snapRect.left;
-                position.y = snapRect.top;
-                distributePosition();
-            }
-            rect.setFillColor(sf::Color::Blue);
-            beingMoved=false;
-
-            return;
+    for ( int i = 0; i < board.sectors.size(); i++ ) {
+      for ( int r = 0; r < board.sectors[i].size(); r++ ) {
+        if ( board.sectors[r][i].contains(sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
+          if(validateMove(board, sf::Vector2i(i+1, r+1))){
+            sf::FloatRect snapRect = board.sectors[r][i];
+            sectorPosition=sf::Vector2i(i+1, r+1);
+            position.x = snapRect.left;
+            position.y = snapRect.top;
+            distributePosition();
+          }else if (dragndrop){
+            position = origin;
+            distributePosition();
           }
+          rect.setFillColor(sf::Color::Blue);
+          beingMoved=false;
+
+          return;
         }
       }
-    }else if ( collider.contains( sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
-      // Pick piece up
-      beingMoved=true;
-      rect.setFillColor(sf::Color::Green);
     }
+  }
+  if ((!beingMoved)
+    && event.type == sf::Event::MouseButtonPressed
+    && event.mouseButton.button == sf::Mouse::Button::Left
+    && collider.contains( sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
+    // Pick piece up
+    beingMoved=true;
+    rect.setFillColor(sf::Color::Green);
+    origin=position;
   }
 }
 
@@ -112,6 +118,10 @@ void Piece::update(sf::RenderWindow& window, Board& board) {
 }
 
 void Piece::render(sf::RenderWindow& window) {
+  if(dragndrop&&beingMoved){
+    position=(sf::Vector2f)sf::Mouse::getPosition(window)-size/2.0f;
+    distributePosition();
+  }
   window.draw(rect);
   
 }

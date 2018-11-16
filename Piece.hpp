@@ -14,6 +14,7 @@ class Piece {
 public:
   sf::Vector2f position = sf::Vector2f(20,20);
   sf::Vector2f size = sf::Vector2f(64, 64);
+  bool dragndrop = true;
 
   sf::Vector2i sectorPosition = sf::Vector2i(4, 1);
   
@@ -25,8 +26,7 @@ public:
   bool beingMoved = false;
 
   
-  sf::FloatRect* originRect = nullptr;
-  sf::Vector2i originRectSector = sf::Vector2i(0, 0);
+  sf::Vector2f origin;
   
 public:
   Piece();

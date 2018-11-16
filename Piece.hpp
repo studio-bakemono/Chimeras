@@ -23,11 +23,7 @@ public:
   sf::FloatRect collider;
   
   bool beingMoved = false;
-  sf::FloatRect* snapRect = nullptr;
-  sf::Vector2i snapRectSector;
 
-  bool foundValidMove;
-  
   
   sf::FloatRect* originRect = nullptr;
   sf::Vector2i originRectSector = sf::Vector2i(0, 0);
@@ -38,6 +34,7 @@ public:
 
   void consumeMoveset(Moveset moves, bool XORMode);
   void snapToSector(sf::Vector2i sector, Board& board);
+  bool validateMove(Board& board, sf::Vector2i pos);
 
   void onEnter(Board& board);
   void update(sf::RenderWindow& window, Board& board);

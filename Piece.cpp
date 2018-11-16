@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <cstdio>
+#include <cmath>
 
 
 Piece::Piece() {
@@ -25,7 +26,6 @@ Piece::Piece() {
 
 
 Piece::~Piece() {
-  snapRect = nullptr;
   originRect = nullptr;
 }
 
@@ -40,6 +40,39 @@ void Piece::snapToSector(sf::Vector2i sector, Board& board) {
   position = sf::Vector2f( board.sectors[sector.y-1][sector.x-1].left, board.sectors[sector.y-1][sector.x-1].top );
 }
 
+bool Piece::validateMove(Board &board, sf::Vector2i pos){
+
+	// Check infinite directional bools 
+	
+	if (moveset.horizontal) {
+	  if (sectorPosition.y == pos.y) {
+	    std::cout << "horizontal\n";
+	    return true;
+	  }
+	}
+	else if (moveset.vertical) {
+	  if (sectorPosition.x == pos.x) {
+	    std::cout << "vertical\n";
+	    return true;
+	  }
+	}
+	else if (moveset.diagonal) {
+	  if (abs(sectorPosition.x - pos.x) ==
+	      abs(sectorPosition.y - pos.y)) {
+
+	    std::cout << "diagonal\n";
+	    return true;
+	  }
+	}
+	// Check offsets for valid moves
+            for (auto m : moveset.offsets) {  
+              if ( pos == sectorPosition+m ) {
+                return true;
+              }
+            }
+  return false;
+}
+
 void Piece::onEvent(sf::Event event, Board &board) {
   if ( event.type == sf::Event::MouseButtonPressed
     && event.mouseButton.button == sf::Mouse::Button::Left) {
@@ -47,46 +80,9 @@ void Piece::onEvent(sf::Event event, Board &board) {
       for ( int i = 0; i < board.sectors.size(); i++ ) {
         for ( int r = 0; r < board.sectors[i].size(); r++ ) {
           if ( board.sectors[r][i].contains(sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
-            bool foundValidMove = false;
-
-	// Check infinite directional bools 
-	
-	if (moveset.horizontal) {
-	  if (sectorPosition.y == snapRectSector.y) {
-	    std::cout << "horizontal\n";
-	    foundValidMove = true;
-	  }
-	}
-	else if (moveset.vertical) {
-	  if (sectorPosition.x == snapRectSector.x) {
-	    std::cout << "vertical\n";
-	    foundValidMove = true;
-	  }
-	}
-	else if (moveset.diagonal) {
-	  if (sectorPosition.x != snapRectSector.x &&
-	      sectorPosition.y != snapRectSector.y) {
-
-	    std::cout << "diagonal\n";
-	    foundValidMove = true;
-	  }
-	}
-	// Check offsets for valid moves
-            for (auto m : moveset.offsets) {  
-              if ( sf::Vector2i(i+1, r+1) == sectorPosition+m ) {
-                break;
-              } else {
-                std::cout << "SectorPosition: "
-                  << sectorPosition.x<<", "<<sectorPosition.y << "\n"
-                  << "2i: "
-                  << i <<", "<< r << "\n"
-                  << "m: "
-                  << m.x <<", "<< m.y << std::endl;
-              }
-            }
-            if(foundValidMove){
+            if(validateMove(board, sf::Vector2i(i+1, r+1))){
                 sf::FloatRect snapRect = board.sectors[r][i];
-                sectorPosition=sf::Vector2i(r+1,i+1);
+                sectorPosition=sf::Vector2i(i+1, r+1);
                 position.x = snapRect.left;
                 position.y = snapRect.top;
                 distributePosition();

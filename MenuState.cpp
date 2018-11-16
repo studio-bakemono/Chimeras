@@ -81,7 +81,6 @@ void MenuState::onEnter(Game* game) {
 
 
 void MenuState::onEvent(sf::Event event) {
-std::cout << "onEvent" <<std::endl;
   //Cycle through the possible states
   if ( (event.type == sf::Event::KeyPressed)  && (event.key.code == sf::Keyboard::Down)){
     menuItems[selected].rect.setFillColor(sf::Color::Black);

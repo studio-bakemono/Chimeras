@@ -8,8 +8,9 @@
 
 #include <vector>
 
-// Forward declaration to avoid circular inclusions
+// Forward declarations to avoid circular inclusions
 class Game;
+class Piece;
 
 class Board {
 
@@ -19,6 +20,7 @@ public:
   int boardSize = 8;
   int boardWidth, boardHeight;
   float sectorSize;
+
   
   sf::Vector2f position = sf::Vector2f(100, 100);
   
@@ -34,7 +36,9 @@ public:
 	int boardSize, float boardWidth, float boardHeight );
 
   ~Board();
-  
+
+  void colorWith(Piece *piece);
+  void resetColor();
   void update(sf::RenderWindow& window);
   void render(sf::RenderWindow& window);
   

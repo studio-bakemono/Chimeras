@@ -3,6 +3,7 @@
 */
 #include "Board.hpp"
 #include "Game.hpp"
+#include "Piece.hpp"
 
 #include <iostream>
 
@@ -91,19 +92,10 @@ Board::Board(Game* game, sf::Vector2f position,
 					   position.y+sectorSize*i ));
       
       debugSectors[i][r].setSize(sf::Vector2f(sectorSize, sectorSize));
-
-      // Draw the chessboard checkered pattern
-      if ( r%2!=0 && i%2!=0)
-	debugSectors[i][r].setFillColor(sf::Color::White);
-      else if (r%2==0 && i%2==0)
-	debugSectors[i][r].setFillColor(sf::Color::White);
-      else
-	debugSectors[i][r].setFillColor(sf::Color::Black);
       
     }
    }
-
-  
+   resetColor();  
   
 }
 
@@ -111,19 +103,46 @@ Board::~Board() {
 
 }
 
+void Board::colorWith(Piece *piece) {
+  // Draw the chessboard checkered pattern
+  sf::Color colors[] = {
+    sf::Color::White,
+    sf::Color::Black,
+    sf::Color(55,255,55),
+    sf::Color(0,100,0),
+  };
+  for (int i = 0; i < boardSize; i++) {
+    for (int r = 0; r < boardSize; r++) {
+      debugSectors[r][i].setFillColor(colors[(r%2^i%2)+2*(piece->validateMove(*this, sf::Vector2i(i+1,r+1)))]);
+    }
+  }
+}
+
+void Board::resetColor() {
+  // Draw the chessboard checkered pattern
+  for (int i = 0; i < boardSize; i++) {
+    for (int r = 0; r < boardSize; r++) {
+      if ( (r%2^i%2)==0)
+        debugSectors[r][i].setFillColor(sf::Color::White);
+      else
+        debugSectors[r][i].setFillColor(sf::Color::Black);
+    }
+  }
+}
+
 void Board::update(sf::RenderWindow& window) {
 
   for (int i = 0; i < boardSize; i++) {
     for (int r = 0; r < boardSize; r++) {
 
-      if (sectors[i][r].contains(sf::Mouse::getPosition(window).x,
+      if (sectors[r][i].contains(sf::Mouse::getPosition(window).x,
 				 sf::Mouse::getPosition(window).y )) {
 
-	
-	std::cout << "Mouse is in sector [" << i+1 << "," << r+1 << "]" <<
+	/*
+	std::cout << "Mouse is in sector [" << r+1 << "," << i+1 << "]" <<
 	  "at posiiton: " << sf::Mouse::getPosition(window).x << " "
 		  << sf::Mouse::getPosition(window).y << std::endl;
-	
+	*/
       }
     }
   }

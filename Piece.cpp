@@ -6,78 +6,133 @@
 #include "Board.hpp"
 
 #include <iostream>
+#include <cstdio>
+#include <cmath>
+
 
 Piece::Piece() {
 
-  
-  rect.setSize(this->size);
-  rect.setPosition(this->position); 
-  
+  rect.setFillColor(sf::Color::Blue);  
+  rect.setSize(size);
+  // Test knight code
+  moveset.horizontal = false;
+  moveset.vertical = false;
+  moveset.diagonal = true;
+  moveset.offsets.push_back(sf::Vector2i(1,2));
+
+  collider.width = size.x;
+  collider.height = size.y;
+
+  distributePosition();
 }
 
 
 Piece::~Piece() {
-  snapRect = nullptr;
+}
+
+void Piece::consumeMoveset(Moveset moves, bool XORMode) {
+  if (!XORMode) {
+    this->moveset = this->moveset || moves;
+  }
 }
 
 
-void Piece::snapToGrid(sf::RenderWindow& window, Board& board) {
+void Piece::snapToSector(sf::Vector2i sector, Board& board) {
+  position = sf::Vector2f( board.sectors[sector.y-1][sector.x-1].left, board.sectors[sector.y-1][sector.x-1].top );
+}
 
-  this->rect.setPosition(this->position);
-  
-  this->collider.top = this->position.y;
-  this->collider.left = this->position.x;
-  this->collider.width = this->size.x;
-  this->collider.height = this->size.y;
+bool Piece::validateMove(Board &board, sf::Vector2i pos){
 
-  
-  for ( int i = 0; i < board.sectors.size(); i++ ) {
-    for ( int r = 0; r < board.sectors[i].size(); r++ ) {
-      
-      if ( board.sectors[i][r].contains((sf::Vector2f)sf::Mouse::getPosition(window))
-	   && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) ) {
+  // Check infinite directional bools 	
 
-	snapRect = &board.sectors[i][r];
-	
-      }
+  if (moveset.horizontal) {
+    if (sectorPosition.y == pos.y) {
+      return true;
+    }
+  }
+  if (moveset.vertical) {
+    if (sectorPosition.x == pos.x) {
+      return true;
+    }
+  }
+  if (moveset.diagonal) {
+    if (abs(sectorPosition.x - pos.x) ==
+        abs(sectorPosition.y - pos.y)) {
+      return true;
     }
   }
 
-  if (collider.contains((sf::Vector2f)sf::Mouse::getPosition(window))
-      && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-	
-    beingMoved = true;
+  // Check offsets for valid moves
+  for (auto m : moveset.offsets) {  
+    if ( pos == sectorPosition+m ) {
+      return true;
+    }
+ }
+ return false;
+}
 
+void Piece::dropPiece(Board &board, sf::Vector2f mousepos)
+{
+  for ( int i = 0; i < board.sectors.size(); i++ ) {
+    for ( int r = 0; r < board.sectors[i].size(); r++ ) {
+      if ( board.sectors[r][i].contains(mousepos) ) {
+        if(validateMove(board, sf::Vector2i(i+1, r+1))){
+          sf::FloatRect snapRect = board.sectors[r][i];
+          sectorPosition=sf::Vector2i(i+1, r+1);
+          position.x = snapRect.left;
+          position.y = snapRect.top;
+          distributePosition();
+          return;
+        }
+      }
+    }
   }
-  else if ( beingMoved && !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)
-	    ) {
+  if (dragndrop){
+    position=origin;
+    distributePosition();
+  }
+}
 
-    if (snapRect) {
-      this->position.x = snapRect->left;
-      this->position.y = snapRect->top;
-      beingMoved = false;
-    }  
+void Piece::onEvent(sf::Event event, Board &board) {
+  if ( beingMoved
+    && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
+    && event.mouseButton.button == sf::Mouse::Button::Left) {
+    dropPiece(board, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
+    rect.setFillColor(sf::Color::Blue);
+    board.resetColor();
+    beingMoved=false;
   }
-  
-  if (beingMoved && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) ) {
-    this->position = (sf::Vector2f)sf::Mouse::getPosition(window) - size/2.f;
+  if ((!beingMoved)
+    && event.type == sf::Event::MouseButtonPressed
+    && event.mouseButton.button == sf::Mouse::Button::Left
+    && collider.contains( sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
+    // Pick piece up
+    beingMoved=true;
+    rect.setFillColor(sf::Color::Green);
+    origin=position;
+    board.colorWith(this);
   }
-  
+}
 
-  /*
-    NOTE: The movement MUST be separated as above in order to work correctly.
-    Toy with it at your own risk.
-  */
-  
+
+
+void Piece::onEnter(Board& board) {
+  snapToSector(sectorPosition, board);
 }
 
 void Piece::update(sf::RenderWindow& window, Board& board) {
-  
-  snapToGrid(window, board);
-  
 }
 
 void Piece::render(sf::RenderWindow& window) {
+  if(dragndrop&&beingMoved){
+    position=(sf::Vector2f)sf::Mouse::getPosition(window)-size/2.0f;
+    distributePosition();
+  }
   window.draw(rect);
-  
+}
+
+void Piece::distributePosition(){
+  rect.setPosition(position); 
+  collider.top = position.y;
+  collider.left = position.x;
 }

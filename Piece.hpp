@@ -8,19 +8,19 @@
 
 #include "Moveset.hpp"
 
+class Game;
 class Board;
 
 class Piece {
 public:
   sf::Vector2f position = sf::Vector2f(20,20);
-  sf::Vector2f size = sf::Vector2f(64, 64);
   bool dragndrop = true;
 
   sf::Vector2i sectorPosition = sf::Vector2i(4, 1);
   
   Moveset moveset;
   
-  sf::RectangleShape rect;
+  sf::Sprite rect;
   sf::FloatRect collider;
   
   bool beingMoved = false;
@@ -35,12 +35,12 @@ public:
   ~Piece();
 
   void consumeMoveset(Moveset moves, bool XORMode);
-  void snapToSector(sf::Vector2i sector, Board& board);
-  bool validateMove(Board& board, sf::Vector2i pos);
+  void snapToSector(sf::Vector2i sector, Board &board);
+  bool validateMove(Board &board, sf::Vector2i pos);
 
-  void onEnter(Board& board);
-  void update(sf::RenderWindow& window, Board& board);
-  void onEvent(sf::Event event, Board& board);
+  void onEnter(Game &game, Board &board);
+  void update(sf::RenderWindow &window, Board &board);
+  void onEvent(sf::Event event, Board &board);
   void render(sf::RenderWindow& window);
   void distributePosition();
   

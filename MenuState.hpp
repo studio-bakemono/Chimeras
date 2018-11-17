@@ -33,7 +33,7 @@ public:
   MenuState(sf::Font font);
   ~MenuState();
   
-  void onEnter(Game* game);
+  void onEnter(Game &game);
 
   void onEvent(sf::Event event);
   

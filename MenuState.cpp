@@ -25,15 +25,15 @@ MenuState::~MenuState() {
 }
 
 
-void MenuState::onEnter(Game* game) {
+void MenuState::onEnter(Game &game) {
 
   //Set up the title
   hello.setString("Chimeras");
   hello.setFont(font);
   hello.setCharacterSize(30);
  
-  hello.setPosition(sf::Vector2f( game->window.getSize().x/2 - 10 - hello.getLocalBounds().width/2,
-				  game->window.getSize().y/2 - hello.getLocalBounds().height/2 ));
+  hello.setPosition(sf::Vector2f( game.window.getSize().x/2 - 10 - hello.getLocalBounds().width/2,
+				  game.window.getSize().y/2 - hello.getLocalBounds().height/2 ));
   
   //Create the menu options
 
@@ -52,13 +52,13 @@ void MenuState::onEnter(Game* game) {
   option1->rect.setOutlineColor(sf::Color::Red);
   option1->rect.setFillColor(sf::Color::Red);
   option1->rect.setOutlineThickness(5);
-  option1->rect.setPosition(sf::Vector2f( game->window.getSize().x/2 - 10 - option1->rect.getLocalBounds().width/2, game->window.getSize().y/2  + 100));
+  option1->rect.setPosition(sf::Vector2f( game.window.getSize().x/2 - 10 - option1->rect.getLocalBounds().width/2, game.window.getSize().y/2  + 100));
 
   option2->rect.setSize(sf::Vector2f(100,50));
   option2->rect.setOutlineColor(sf::Color::Red);
   option2->rect.setFillColor(sf::Color::Black);
   option2->rect.setOutlineThickness(5);
-  option2->rect.setPosition(sf::Vector2f( game->window.getSize().x/2 - 10 - option2->rect.getLocalBounds().width/2, game->window.getSize().y/2 + 200));
+  option2->rect.setPosition(sf::Vector2f( game.window.getSize().x/2 - 10 - option2->rect.getLocalBounds().width/2, game.window.getSize().y/2 + 200));
 
 
   // If it has states to switch to give them it

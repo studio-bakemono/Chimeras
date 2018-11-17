@@ -29,7 +29,7 @@ public:
   TestState(sf::Font font);
   ~TestState();
   
-  void onEnter(Game* game);
+  void onEnter(Game &game);
   void onEvent(sf::Event event);
   State* update(sf::RenderWindow& window);
   void render(sf::RenderWindow& window);

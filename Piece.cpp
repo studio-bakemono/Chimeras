@@ -3,7 +3,9 @@
 */
 
 #include "Piece.hpp"
+#include "Game.hpp"
 #include "Board.hpp"
+#include "config.hpp"
 
 #include <iostream>
 #include <cstdio>
@@ -12,16 +14,11 @@
 
 Piece::Piece() {
 
-  rect.setFillColor(sf::Color::Blue);  
-  rect.setSize(size);
   // Test knight code
   moveset.horizontal = false;
   moveset.vertical = false;
   moveset.diagonal = true;
   moveset.offsets.push_back(sf::Vector2i(1,2));
-
-  collider.width = size.x;
-  collider.height = size.y;
 
   distributePosition();
 }
@@ -98,7 +95,7 @@ void Piece::onEvent(sf::Event event, Board &board) {
     && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
     && event.mouseButton.button == sf::Mouse::Button::Left) {
     dropPiece(board, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
-    rect.setFillColor(sf::Color::Blue);
+    rect.setColor(sf::Color::White);
     board.resetColor();
     beingMoved=false;
   }
@@ -108,7 +105,7 @@ void Piece::onEvent(sf::Event event, Board &board) {
     && collider.contains( sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
     // Pick piece up
     beingMoved=true;
-    rect.setFillColor(sf::Color::Green);
+    rect.setColor(sf::Color::Green);
     origin=position;
     board.colorWith(this);
   }
@@ -116,8 +113,15 @@ void Piece::onEvent(sf::Event event, Board &board) {
 
 
 
-void Piece::onEnter(Board& board) {
+void Piece::onEnter(Game &game, Board &board) {
+  rect.setTexture(game.atlas);
+  rect.setTextureRect(sf::IntRect(91, 246, SPRITE_SIZE, SPRITE_SIZE));
+  rect.setScale(sf::Vector2f(1,1)*board.sectorSize/float(SPRITE_SIZE));
+  collider.width = board.sectorSize;
+  collider.height = board.sectorSize;
+
   snapToSector(sectorPosition, board);
+  distributePosition();
 }
 
 void Piece::update(sf::RenderWindow& window, Board& board) {
@@ -125,7 +129,7 @@ void Piece::update(sf::RenderWindow& window, Board& board) {
 
 void Piece::render(sf::RenderWindow& window) {
   if(dragndrop&&beingMoved){
-    position=(sf::Vector2f)sf::Mouse::getPosition(window)-size/2.0f;
+    position=(sf::Vector2f)sf::Mouse::getPosition(window);
     distributePosition();
   }
   window.draw(rect);

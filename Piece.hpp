@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Moveset.hpp"
+#include "Basepiece.hpp"
 
 class Game;
 class Board;
@@ -29,20 +30,30 @@ public:
   sf::Vector2f origin;
 
   void dropPiece(Board &board, sf::Vector2f mousepos);
-  
+
+  int atlas_width;
+  int animal;
+  Basepiece basepiece;
+
 public:
   Piece();
   ~Piece();
 
-  void consumeMoveset(Moveset moves, bool XORMode);
+  void consumePiece(Piece other, bool XORMode);
+    void consumeMoveset(Moveset moves, bool XORMode);
+    void consumeBasepiece(Basepiece other);
+
   void snapToSector(sf::Vector2i sector, Board &board);
   bool validateMove(Board &board, sf::Vector2i pos);
+
+  void distributePosition();
+  void calculateTexCoord(int time);
+
 
   void onEnter(Game &game, Board &board);
   void update(sf::RenderWindow &window, Board &board);
   void onEvent(sf::Event event, Board &board);
-  void render(sf::RenderWindow& window);
-  void distributePosition();
+  void render(sf::RenderWindow& window, int time);
   
 
 };

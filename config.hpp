@@ -1,1 +1,3 @@
 #define SPRITE_SIZE 128
+#define ANIM_FRAMECOUNT 20
+#define ANIM_FRAMETIME 36

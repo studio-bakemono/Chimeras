@@ -59,6 +59,6 @@ void TestState::render(sf::RenderWindow& window) {
   window.draw(greeting);
 
   board.render(window);
-  testPiece.render(window);
+  testPiece.render(window, clock.getElapsedTime().asMilliseconds());
   
 }

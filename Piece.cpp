@@ -27,10 +27,24 @@ Piece::Piece() {
 Piece::~Piece() {
 }
 
+void Piece::consumePiece(Piece other, bool XORMode) {
+  consumeMoveset(other.moveset, XORMode);
+  consumeBasepiece(other.basepiece);
+}
+
+
 void Piece::consumeMoveset(Moveset moves, bool XORMode) {
-  if (!XORMode) {
+  if (XORMode) {
+    //TODO: XOR mode
+    this->moveset = this->moveset || moves;
+  }else{
     this->moveset = this->moveset || moves;
   }
+}
+
+void Piece::consumeBasepiece(Basepiece bp) {
+  animal = combine_basepieces(basepiece, bp);
+  basepiece = bp;
 }
 
 
@@ -95,6 +109,7 @@ void Piece::onEvent(sf::Event event, Board &board) {
     && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
     && event.mouseButton.button == sf::Mouse::Button::Left) {
     dropPiece(board, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
+    calculateTexCoord(0);
     rect.setColor(sf::Color::White);
     board.resetColor();
     beingMoved=false;
@@ -115,7 +130,8 @@ void Piece::onEvent(sf::Event event, Board &board) {
 
 void Piece::onEnter(Game &game, Board &board) {
   rect.setTexture(game.atlas);
-  rect.setTextureRect(sf::IntRect(91, 246, SPRITE_SIZE, SPRITE_SIZE));
+  atlas_width = game.atlas.getSize().x/SPRITE_SIZE;
+  calculateTexCoord(0);
   rect.setScale(sf::Vector2f(1,1)*board.sectorSize/float(SPRITE_SIZE));
   collider.width = board.sectorSize;
   collider.height = board.sectorSize;
@@ -127,13 +143,27 @@ void Piece::onEnter(Game &game, Board &board) {
 void Piece::update(sf::RenderWindow& window, Board& board) {
 }
 
-void Piece::render(sf::RenderWindow& window) {
+void Piece::render(sf::RenderWindow& window, int time) {
   if(dragndrop&&beingMoved){
     position=(sf::Vector2f)sf::Mouse::getPosition(window);
     distributePosition();
   }
+  if (beingMoved) {
+    calculateTexCoord(time);
+  }
   window.draw(rect);
 }
+
+void Piece::calculateTexCoord(int time){
+  int a = (animal*ANIM_FRAMECOUNT+(time/ANIM_FRAMETIME)%ANIM_FRAMECOUNT);
+  rect.setTextureRect(sf::IntRect(
+    SPRITE_SIZE * (a % atlas_width),
+    SPRITE_SIZE * (a / atlas_width),
+    SPRITE_SIZE, SPRITE_SIZE
+  ));
+}
+
+
 
 void Piece::distributePosition(){
   rect.setPosition(position); 

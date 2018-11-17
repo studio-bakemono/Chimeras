@@ -19,6 +19,7 @@ public:
   
   sf::Font font;
   sf::Text greeting;
+  sf::Clock clock;
 
   Board board;
   Piece testPiece;

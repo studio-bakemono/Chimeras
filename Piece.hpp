@@ -32,8 +32,9 @@ public:
   void dropPiece(Board &board, sf::Vector2f mousepos);
 
   int atlas_width;
+  bool facing_front = true;
   int animal;
-  Basepiece basepiece;
+  Basepiece basepiece = Basepiece::PAWN;
 
 public:
   Piece();

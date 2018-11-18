@@ -11,7 +11,7 @@ enum Basepiece{
   KING,
   LEN
 };
- 
+
 /*
  This is almost a pairing function,
    except it maps a pair of integers to the same number when the order is reversed.

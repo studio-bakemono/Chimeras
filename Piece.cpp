@@ -155,7 +155,9 @@ void Piece::render(sf::RenderWindow& window, int time) {
 }
 
 void Piece::calculateTexCoord(int time){
-  int a = (animal*ANIM_FRAMECOUNT+(time/ANIM_FRAMETIME)%ANIM_FRAMECOUNT);
+  int a = animal;
+  a = a * 2 + (facing_front ? 0 : 1);
+  a = a * ANIM_FRAMECOUNT + ((time / ANIM_FRAMETIME) % ANIM_FRAMECOUNT);
   rect.setTextureRect(sf::IntRect(
     SPRITE_SIZE * (a % atlas_width),
     SPRITE_SIZE * (a / atlas_width),

@@ -17,7 +17,7 @@ Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chimeras",
 		      // (feature we're not using, feature we're not using, AntiAliasing level 8, more optional args are unset..)
 		      sf::ContextSettings(0, 0, 8)){
   window.setFramerateLimit(FRAME_RATE);
-  if(!atlas.loadFromFile("assets/test.png")) {
+  if(!atlas.loadFromFile("assets/atlas.png")) {
     std::cerr << "Error loading texture atlas" << std::endl;
   }
   atlas.setSmooth(false);

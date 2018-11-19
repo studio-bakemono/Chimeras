@@ -3,12 +3,12 @@
 #include <iostream>
 
 enum Basepiece{
-  PAWN,
-  ROOK,
-  BISHOP,
-  KNIGHT,
-  QUEEN,
-  KING,
+  PAWN, // Penguin
+  ROOK,  // Bear
+  BISHOP, // Raccoon
+  KNIGHT, // Fish
+  QUEEN, // Cat
+  KING, // Lion
   LEN
 };
 

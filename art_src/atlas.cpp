@@ -35,9 +35,9 @@ int main( int /*argc*/, char ** argv)
           std::string animal_filename = basepiece_to_string((Basepiece)l)+basepiece_to_string((Basepiece)s)+".png";
           cout<<"Reading animal #"<<animal<<" from \""<<animal_filename<<"\".. ";
           in.read(animal_filename);
-          int off = animal * ANIM_FRAMECOUNT * 2;
+          int off = animal * SPRITES_PER_ANIMAL;
           for(int face=0;face<2;face++){
-            for(int frame=0;frame<ANIM_FRAMECOUNT;frame++){
+            for(int frame=0;frame<2;frame++){
               Image sprite = in;
               sprite.crop( Geometry( SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE*face, SPRITE_SIZE*frame ) );
               atlas.composite( sprite, (SPRITE_SIZE * off) % ATLAS_SIZE, (SPRITE_SIZE * off) / ATLAS_SIZE, OverCompositeOp );
@@ -51,7 +51,6 @@ int main( int /*argc*/, char ** argv)
         animal++;
       }
     }
-    atlas.display();
     atlas.write("../assets/atlas.png");
   }catch(Exception &error){
     cerr << "Caught fatal exception: " << error.what() << endl;

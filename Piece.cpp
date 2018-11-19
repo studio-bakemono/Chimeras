@@ -44,7 +44,9 @@ void Piece::consumeMoveset(Moveset moves, bool XORMode) {
 
 void Piece::consumeBasepiece(Basepiece bp) {
   animal = combine_basepieces(basepiece, bp);
-  basepiece = bp;
+  if (basepiece != Basepiece::KING) {
+    basepiece = bp;
+  }
 }
 
 
@@ -108,11 +110,10 @@ void Piece::onEvent(sf::Event event, Board &board) {
   if ( beingMoved
     && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
     && event.mouseButton.button == sf::Mouse::Button::Left) {
-    dropPiece(board, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
-    calculateTexCoord(0);
-    rect.setColor(sf::Color::White);
-    board.resetColor();
     beingMoved=false;
+    calculateTexCoord(0);
+    dropPiece(board, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
+    board.resetColor();
   }
   if ((!beingMoved)
     && event.type == sf::Event::MouseButtonPressed
@@ -120,7 +121,7 @@ void Piece::onEvent(sf::Event event, Board &board) {
     && collider.contains( sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
     // Pick piece up
     beingMoved=true;
-    rect.setColor(sf::Color::Green);
+    calculateTexCoord(0);
     origin=position;
     board.colorWith(this);
   }
@@ -148,16 +149,14 @@ void Piece::render(sf::RenderWindow& window, int time) {
     position=(sf::Vector2f)sf::Mouse::getPosition(window);
     distributePosition();
   }
-  if (beingMoved) {
-    calculateTexCoord(time);
-  }
   window.draw(rect);
+  //TODO: Post Nov: Animate again
 }
 
 void Piece::calculateTexCoord(int time){
   int a = animal;
   a = a * 2 + (facing_front ? 0 : 1);
-  a = a * ANIM_FRAMECOUNT + ((time / ANIM_FRAMETIME) % ANIM_FRAMECOUNT);
+  a = a * 2 + (beingMoved ? 0 : 1);
   rect.setTextureRect(sf::IntRect(
     SPRITE_SIZE * (a % atlas_width),
     SPRITE_SIZE * (a / atlas_width),

@@ -9,9 +9,7 @@
 
 #include <iostream>
 
-TestState::TestState(sf::Font font) {
-
-  this->font = font;
+TestState::TestState() {
   
 }
 
@@ -22,7 +20,7 @@ TestState::~TestState() {
 void TestState::onEnter(Game &game) {
 
   greeting.setString("TestState");
-  greeting.setFont(font);
+  greeting.setFont(game.font);
   greeting.setCharacterSize(20);
   greeting.setPosition(0,0);
 

@@ -56,24 +56,23 @@ void Piece::snapToSector(sf::Vector2i sector, Board& board) {
 }
 
 bool Piece::validateMove(Board &board, sf::Vector2i pos){
+  // No stalling :3
+  if (pos == sectorPosition){ 
+    return false;
+  }
 
   // Check infinite directional bools 	
 
-  if (moveset.horizontal) {
-    if (sectorPosition.y == pos.y) {
-      return true;
-    }
+  if (moveset.horizontal && sectorPosition.y == pos.y) {
+    return true;
   }
-  if (moveset.vertical) {
-    if (sectorPosition.x == pos.x) {
-      return true;
-    }
+  if (moveset.vertical && sectorPosition.x == pos.x) {
+    return true;
   }
-  if (moveset.diagonal) {
-    if (abs(sectorPosition.x - pos.x) ==
-        abs(sectorPosition.y - pos.y)) {
-      return true;
-    }
+  if (moveset.diagonal &&
+    abs(sectorPosition.x - pos.x) ==
+    abs(sectorPosition.y - pos.y)) {
+    return true;
   }
   if (moveset.circular){
     if (floor(sqrt(pow(sectorPosition.x - pos.x, 2.0) +pow(sectorPosition.y - pos.y, 2.0))) == 2)
@@ -132,7 +131,7 @@ void Piece::onEvent(sf::Event event, Board &board) {
     beingMoved=true;
     calculateTexCoord(0);
     origin=position;
-    board.colorWith(this);
+    board.colorWith(*this);
   }
 }
 

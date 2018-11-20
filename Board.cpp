@@ -78,7 +78,7 @@ Board::~Board() {
 
 }
 
-void Board::colorWith(Piece *piece) {
+void Board::colorWith(Piece &piece) {
   // Draw the chessboard checkered pattern
   sf::Color colors[] = {
     sf::Color::White,
@@ -88,7 +88,7 @@ void Board::colorWith(Piece *piece) {
   };
   for (int i = 0; i < boardSize; i++) {
     for (int r = 0; r < boardSize; r++) {
-      debugSectors[r][i].setFillColor(colors[(r%2^i%2)+2*(piece->validateMove(*this, sf::Vector2i(i+1,r+1)))]);
+      debugSectors[r][i].setFillColor(colors[(r%2^i%2)+2*(piece.validateMove(*this, sf::Vector2i(i+1,r+1)))]);
     }
   }
 }

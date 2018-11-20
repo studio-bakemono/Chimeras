@@ -8,15 +8,7 @@
 #include "Game.hpp"
 #include "TestState.hpp"
 
-MenuState::MenuState(sf::Font font) {
-  //hello.setFont(font);
-  //hello.setString("Hello, Sailor!");
-  // hello.setCharacterSize(20);
-  //hello.setFillColor(sf::Color::White);
-  //hello.setFillColor(sf::Color::Red);
-
-  this->font = font;
-
+MenuState::MenuState() {
 }
 
 
@@ -29,7 +21,7 @@ void MenuState::onEnter(Game &game) {
 
   //Set up the title
   hello.setString("Chimeras");
-  hello.setFont(font);
+  hello.setFont(game.font);
   hello.setCharacterSize(30);
  
   hello.setPosition(sf::Vector2f( game.window.getSize().x/2 - 10 - hello.getLocalBounds().width/2,
@@ -45,8 +37,8 @@ void MenuState::onEnter(Game &game) {
   MenuItem* option1 = &menuItems[0];
   MenuItem* option2 = &menuItems[1];
 
-  option1->name = "Option 1";
-  option2->name = "Option 2";
+  option1->name = "Play";
+  option2->name = "Also plays";
 
   option1->rect.setSize(sf::Vector2f(100,50));
   option1->rect.setOutlineColor(sf::Color::Red);
@@ -62,13 +54,13 @@ void MenuState::onEnter(Game &game) {
 
 
   // If it has states to switch to give them it
-  option1->menState =  new TestState(this->font);
-  option2->menState =  new TestState(this->font);
+  option1->menState = [](MenuState *) { return new TestState(); };
+  option2->menState = [](MenuState *) { return new TestState(); };
 
   // Do menuItem text settings here to make positioning relative to rectShape's
   for ( auto& m : menuItems ) {
     m.updateDisplayText();
-    m.displayText.setFont(font);
+    m.displayText.setFont(game.font);
     m.displayText.setCharacterSize(17);
     m.displayText.setPosition( sf::Vector2f( m.rect.getPosition().x,
 					     m.rect.getPosition().y+10));
@@ -104,9 +96,7 @@ State* MenuState::update(sf::RenderWindow& window) {
   
   if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) ){
     std::cout << "Entering state" <<std::endl;
-    State *ret=nullptr;
-    std::swap(ret, menuItems[selected].menState);
-    return ret;
+    return menuItems[selected].menState(this);
   }
   
   

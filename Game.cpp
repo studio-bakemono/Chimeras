@@ -24,7 +24,7 @@ Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chimeras",
   if(!font.loadFromFile("assets/RockSalt-Regular.ttf")) {
     std::cerr << "Error loading font" << std::endl;
   }
-  state = new MenuState(font);
+  state = new MenuState();
   state->onEnter(*this);
 }
 

@@ -63,8 +63,10 @@ struct MenuItem{
     displayText.setString(name);
   }
   ~MenuItem() {
-    delete menState;
-    menState = nullptr;
+    if (menState){
+      delete menState;
+      menState = nullptr;
+    }
   }
   
 };

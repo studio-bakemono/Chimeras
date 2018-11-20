@@ -103,10 +103,10 @@ State* MenuState::update(sf::RenderWindow& window) {
 
   
   if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) ){
-    
-  
-    return menuItems[selected].menState;
     std::cout << "Entering state" <<std::endl;
+    State *ret=nullptr;
+    std::swap(ret, menuItems[selected].menState);
+    return ret;
   }
   
   

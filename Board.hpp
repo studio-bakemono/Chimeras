@@ -36,7 +36,7 @@ public:
 
   ~Board();
 
-  void colorWith(Piece *piece);
+  void colorWith(Piece &piece);
   void resetColor();
   void update(sf::RenderWindow& window);
   void render(sf::RenderWindow& window);

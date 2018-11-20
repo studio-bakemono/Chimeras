@@ -17,7 +17,6 @@ class Game;
 class TestState : public State {
 public:
   
-  sf::Font font;
   sf::Text greeting;
   sf::Clock clock;
 
@@ -27,7 +26,7 @@ public:
   
 public:
 
-  TestState(sf::Font font);
+  TestState();
   ~TestState();
   
   void onEnter(Game &game);

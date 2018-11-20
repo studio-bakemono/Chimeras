@@ -11,6 +11,14 @@ Board::Board() {
   
 }
 
+int const QUAD[8][2] = {
+  {0, 0}, {1, 0},
+  {0, 1}, {1, 1},
+  {0, 0}, {0, 1},
+  {1, 0}, {1, 1},
+};
+
+
 Board::Board(Game &game, int boardSize, float boardWidth, float boardHeight) {
   
   gridLines.setPrimitiveType(sf::Lines);
@@ -22,18 +30,10 @@ Board::Board(Game &game, int boardSize, float boardWidth, float boardHeight) {
   else {
     sectorSize = boardHeight/(float)boardSize;
   }
-    
-  for (int i = 0; i <= boardSize; i++) {
-    gridLines.append( sf::Vector2f(position.x, position.y+sectorSize*i) );
-    gridLines.append( sf::Vector2f(position.x+boardWidth, position.y+sectorSize*i) );
+
+  for (int i = 0; i < sizeof(QUAD)/sizeof(QUAD[0]); i++) {
+    gridLines.append( sf::Vector2f(position.x+QUAD[i][0]*boardWidth, position.y+QUAD[i][1]*boardHeight) );
   }
-
-  for (int i = 0; i <= boardSize; i++) {
-    gridLines.append( sf::Vector2f(position.x+sectorSize*i, position.y) );
-    gridLines.append( sf::Vector2f(position.x+sectorSize*i, position.y+boardHeight) );
-  }  
-
-  
 }
 
 Board::Board(Game &game, sf::Vector2f position,
@@ -53,17 +53,9 @@ Board::Board(Game &game, sf::Vector2f position,
     sectorSize = boardHeight/(float)boardSize;
   
     
-  for (int i = 0; i <= boardSize; i++) {
-    gridLines.append( sf::Vector2f(position.x, position.y+sectorSize*i) );
-    gridLines.append( sf::Vector2f(position.x+boardWidth, position.y+sectorSize*i) );
+  for (int i = 0; i < sizeof(QUAD)/sizeof(QUAD[0]); i++) {
+    gridLines.append( sf::Vector2f(position.x+QUAD[i][0]*boardWidth, position.y+QUAD[i][1]*boardHeight) );
   }
-
-  for (int i = 0; i <= boardSize; i++) {
-    gridLines.append( sf::Vector2f(position.x+sectorSize*i, position.y) );
-    gridLines.append( sf::Vector2f(position.x+sectorSize*i, position.y+boardHeight) );
-  }  
-
-
   
   sectors.resize(boardSize);
   for (int i = 0; i < sectors.size(); i++) {

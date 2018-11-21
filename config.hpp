@@ -1,0 +1,3 @@
+#define ATLAS_SIZE 1024
+#define SPRITE_SIZE 128
+#define SPRITES_PER_ANIMAL 4

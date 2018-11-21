@@ -3,7 +3,9 @@
 */
 
 #include "Piece.hpp"
+#include "Game.hpp"
 #include "Board.hpp"
+#include "config.hpp"
 
 #include <iostream>
 #include <cstdio>
@@ -12,16 +14,11 @@
 
 Piece::Piece() {
 
-  rect.setFillColor(sf::Color::Blue);  
-  rect.setSize(size);
   // Test knight code
   moveset.horizontal = false;
   moveset.vertical = false;
   moveset.diagonal = true;
   moveset.offsets.push_back(sf::Vector2i(1,2));
-
-  collider.width = size.x;
-  collider.height = size.y;
 
   distributePosition();
 }
@@ -30,9 +27,25 @@ Piece::Piece() {
 Piece::~Piece() {
 }
 
+void Piece::consumePiece(Piece other, bool XORMode) {
+  consumeMoveset(other.moveset, XORMode);
+  consumeBasepiece(other.basepiece);
+}
+
+
 void Piece::consumeMoveset(Moveset moves, bool XORMode) {
-  if (!XORMode) {
+  if (XORMode) {
+    //TODO: XOR mode
     this->moveset = this->moveset || moves;
+  }else{
+    this->moveset = this->moveset || moves;
+  }
+}
+
+void Piece::consumeBasepiece(Basepiece bp) {
+  animal = combine_basepieces(basepiece, bp);
+  if (basepiece != Basepiece::KING) {
+    basepiece = bp;
   }
 }
 
@@ -97,10 +110,10 @@ void Piece::onEvent(sf::Event event, Board &board) {
   if ( beingMoved
     && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
     && event.mouseButton.button == sf::Mouse::Button::Left) {
-    dropPiece(board, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
-    rect.setFillColor(sf::Color::Blue);
-    board.resetColor();
     beingMoved=false;
+    calculateTexCoord(0);
+    dropPiece(board, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
+    board.resetColor();
   }
   if ((!beingMoved)
     && event.type == sf::Event::MouseButtonPressed
@@ -108,7 +121,7 @@ void Piece::onEvent(sf::Event event, Board &board) {
     && collider.contains( sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
     // Pick piece up
     beingMoved=true;
-    rect.setFillColor(sf::Color::Green);
+    calculateTexCoord(0);
     origin=position;
     board.colorWith(this);
   }
@@ -116,20 +129,42 @@ void Piece::onEvent(sf::Event event, Board &board) {
 
 
 
-void Piece::onEnter(Board& board) {
+void Piece::onEnter(Game &game, Board &board) {
+  rect.setTexture(game.atlas);
+  atlas_width = game.atlas.getSize().x/SPRITE_SIZE;
+  calculateTexCoord(0);
+  rect.setScale(sf::Vector2f(1,1)*board.sectorSize/float(SPRITE_SIZE));
+  collider.width = board.sectorSize;
+  collider.height = board.sectorSize;
+
   snapToSector(sectorPosition, board);
+  distributePosition();
 }
 
 void Piece::update(sf::RenderWindow& window, Board& board) {
 }
 
-void Piece::render(sf::RenderWindow& window) {
+void Piece::render(sf::RenderWindow& window, int time) {
   if(dragndrop&&beingMoved){
-    position=(sf::Vector2f)sf::Mouse::getPosition(window)-size/2.0f;
+    position=(sf::Vector2f)sf::Mouse::getPosition(window);
     distributePosition();
   }
   window.draw(rect);
+  //TODO: Post Nov: Animate again
 }
+
+void Piece::calculateTexCoord(int time){
+  int a = animal;
+  a = a * 2 + (facing_front ? 0 : 1);
+  a = a * 2 + (beingMoved ? 0 : 1);
+  rect.setTextureRect(sf::IntRect(
+    SPRITE_SIZE * (a % atlas_width),
+    SPRITE_SIZE * (a / atlas_width),
+    SPRITE_SIZE, SPRITE_SIZE
+  ));
+}
+
+
 
 void Piece::distributePosition(){
   rect.setPosition(position); 

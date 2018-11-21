@@ -15,14 +15,17 @@ Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chimeras",
 		      // No resize button on our window
 		      sf::Style::Close,
 		      // (feature we're not using, feature we're not using, AntiAliasing level 8, more optional args are unset..)
-		      sf::ContextSettings(0, 0, 8)
-		      ){
+		      sf::ContextSettings(0, 0, 8)){
   window.setFramerateLimit(FRAME_RATE);
+  if(!atlas.loadFromFile("assets/atlas.png")) {
+    std::cerr << "Error loading texture atlas" << std::endl;
+  }
+  atlas.setSmooth(false);
   if(!font.loadFromFile("assets/RockSalt-Regular.ttf")) {
     std::cerr << "Error loading font" << std::endl;
   }
   state = new MenuState(font);
-  state->onEnter(this);
+  state->onEnter(*this);
 }
 
 Game::~Game() {
@@ -35,7 +38,7 @@ void Game::to_state(State *newstate){
   assert(state!=newstate);
   delete state;
   state = newstate;
-  state->onEnter(this);
+  state->onEnter(*this);
 }
 
 void Game::run(){

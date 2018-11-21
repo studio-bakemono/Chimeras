@@ -19,6 +19,7 @@ public:
   
   sf::Font font;
   sf::Text greeting;
+  sf::Clock clock;
 
   Board board;
   Piece testPiece;
@@ -29,7 +30,7 @@ public:
   TestState(sf::Font font);
   ~TestState();
   
-  void onEnter(Game* game);
+  void onEnter(Game &game);
   void onEvent(sf::Event event);
   State* update(sf::RenderWindow& window);
   void render(sf::RenderWindow& window);

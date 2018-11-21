@@ -17,7 +17,7 @@ public:
   
   sf::RenderWindow window;
   sf::Font font;
-
+  sf::Texture atlas;
   
   Game();
   ~Game();

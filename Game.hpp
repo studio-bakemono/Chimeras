@@ -6,6 +6,7 @@
 
 #include "State.hpp"
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 class Game{
 public:
@@ -22,9 +23,10 @@ public:
   Game();
   ~Game();
   void run();
+  std::shared_ptr<State> get_state();
 
 private:
-  State* state;
-  void to_state(State*);
+  std::shared_ptr<State> state;
+  void to_state(std::shared_ptr<State>);
 
 };

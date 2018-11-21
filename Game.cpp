@@ -24,7 +24,7 @@ Game::Game() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Chimeras",
   if(!font.loadFromFile("assets/RockSalt-Regular.ttf")) {
     std::cerr << "Error loading font" << std::endl;
   }
-  state = new MenuState();
+  state = std::make_shared<MenuState>();
   state->onEnter(*this);
 }
 
@@ -32,14 +32,16 @@ Game::~Game() {
 
 }
 
-void Game::to_state(State *newstate){
-  //state->onLeave(window);
-  //newstate being state would cause use-after-free
-  assert(state!=newstate);
-  if (!newstate->isTransition)
-    delete state;
-  state = newstate;
-  state->onEnter(*this);
+std::shared_ptr<State> Game::get_state(){
+  return state;
+}
+
+void Game::to_state(std::shared_ptr<State> newstate){
+  if(newstate!=state){
+    //state->onLeave(window);
+    newstate->onEnter(*this);
+    state = newstate;
+  }
 }
 
 void Game::run(){
@@ -49,7 +51,6 @@ void Game::run(){
 	    if (event.type == sf::Event::Closed) {
 
         // if the window gets closed
-        delete state;
         window.close();
         return;
 
@@ -58,8 +59,8 @@ void Game::run(){
       }
     }
 
-    // Update 
-    State *next = state->update(window);
+    // Update
+    std::shared_ptr<State> next = state->update(window);
     if(next){
       to_state(next);
       continue;

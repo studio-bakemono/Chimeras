@@ -7,20 +7,15 @@
 
 #include <iostream>
 
-TransitionState::TransitionState(State* previousState, State* transitionState) {
-  isTransition = true;
-  
-  transitionTo = transitionState;
-  this->previousState = previousState;
+TransitionState::TransitionState(std::shared_ptr<State> transitionState) : transitionTo(transitionState){
 }
 
 TransitionState::~TransitionState() {
-  transitionTo = nullptr;
 }
 
 
 void TransitionState::onEnter(Game& game) {
-
+  previousState = game.get_state();
   timer.restart();
   std::cout << "Are we calling onEnter?" << std::endl;
   
@@ -30,14 +25,14 @@ void TransitionState::onEvent(sf::Event event) {
 
 }
 
-State* TransitionState::update(sf::RenderWindow& window) {
+std::shared_ptr<State> TransitionState::update(sf::RenderWindow& window) {
 
   if (timer.getElapsedTime().asSeconds() >= 3.f) {
-    std::cout << "transitioning to new State!" << std::endl;
+    std::cout << " transitioning to new State!" << std::endl;
     return transitionTo;
   }
   else {
-    std::cout << "Tester" << std::endl;
+    std::cout<<"."<<std::flush;
     return nullptr;
   }
 }

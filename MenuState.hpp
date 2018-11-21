@@ -11,6 +11,7 @@
 #include <iostream>
 #include <cstdint>
 #include <functional>
+#include <memory>
 
 // Forward declaration, gets included in MenuState.cpp to avoid circular inclusion
 class Game;
@@ -36,7 +37,7 @@ public:
 
   void onEvent(sf::Event event);
   
-  State* update(sf::RenderWindow& window);
+  std::shared_ptr<State> update(sf::RenderWindow& window);
 
   void render(sf::RenderWindow& window);
   
@@ -47,7 +48,7 @@ struct MenuItem{
   std::string name;
   sf::Text displayText;
   sf::RectangleShape rect;
-  std::function<State*(MenuState *)> menState;
+  std::function<std::shared_ptr<State>(MenuState *)> menState;
 
 
   inline void updateDisplayText() {

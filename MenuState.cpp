@@ -57,8 +57,8 @@ void MenuState::onEnter(Game &game) {
 
 
   // If it has states to switch to give them it
-  option1->menState = [](MenuState * menu) { return new TransitionState(menu, new TestState()); };
-  option2->menState = [](MenuState *) { return new TestState(); };
+  option1->menState = [](MenuState *) { return std::make_shared<TransitionState>(std::make_shared<TestState>()); };
+  option2->menState = [](MenuState *) { return std::make_shared<TestState>(); };
 
   // Do menuItem text settings here to make positioning relative to rectShape's
   for ( auto& m : menuItems ) {
@@ -94,7 +94,7 @@ void MenuState::onEvent(sf::Event event) {
 }
 
 
-State* MenuState::update(sf::RenderWindow& window) {
+std::shared_ptr<State> MenuState::update(sf::RenderWindow& window) {
 
   
   if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) ){

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 #include "State.hpp"
 #include "Board.hpp"
@@ -31,7 +32,7 @@ public:
   
   void onEnter(Game &game);
   void onEvent(sf::Event event);
-  State* update(sf::RenderWindow& window);
+  std::shared_ptr<State> update(sf::RenderWindow& window);
   void render(sf::RenderWindow& window);
     
 };

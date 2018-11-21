@@ -22,6 +22,8 @@ Piece::Piece() {
   moveset.offsets.push_back(sf::Vector2i(1,2));
 
   distributePosition();
+  basepiece = Basepiece::PAWN;
+  consumeBasepiece(basepiece);
 }
 
 

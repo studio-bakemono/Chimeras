@@ -5,6 +5,7 @@
 
 
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 #include "State.hpp"
 
@@ -12,20 +13,20 @@ class Game;
 
 class TransitionState : public State {
 public:
-  State* previousState = nullptr;
-  State* transitionTo = nullptr;
+  std::shared_ptr<State> previousState = nullptr;
+  std::shared_ptr<State> transitionTo = nullptr;
 
   sf::Clock timer;
   
 public:
 
 
-  TransitionState(State* previousState, State* transitionState);
+  TransitionState(std::shared_ptr<State> transitionState);
   ~TransitionState();
   
   void onEnter(Game& game);
   void onEvent(sf::Event event);
-  State* update(sf::RenderWindow& window);
+  std::shared_ptr<State> update(sf::RenderWindow& window);
   void render(sf::RenderWindow& window);  
 
   

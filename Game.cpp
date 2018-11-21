@@ -33,7 +33,8 @@ void Game::to_state(State *newstate){
   //state->onLeave(window);
   //newstate being state would cause use-after-free
   assert(state!=newstate);
-  delete state;
+  if (!newstate->isTransition)
+    delete state;
   state = newstate;
   state->onEnter(this);
 }

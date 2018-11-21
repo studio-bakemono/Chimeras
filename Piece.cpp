@@ -107,8 +107,34 @@ void Piece::dropPiece(Board &board, sf::Vector2f mousepos)
 
 void Piece::onEvent(sf::Event event, Board &board) {
   if ( beingMoved
+       // Determine what control mode is being used, compare different events
     && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
+       // If mouse button is down
     && event.mouseButton.button == sf::Mouse::Button::Left) {
+
+    for ( int i = 0; i < board.sectors.size(); i++ ) {
+      for ( int r = 0; r < board.sectors[i].size(); r++ ) {
+	
+        if ( board.sectors[r][i].contains(sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
+          if(validateMove(board, sf::Vector2i(i+1, r+1))) {
+
+	    sf::FloatRect snapRect = board.sectors[r][i];
+            sectorPosition=sf::Vector2i(i+1, r+1);
+            position.x = snapRect.left;
+            position.y = snapRect.top;
+            distributePosition();
+            goto foundPiece;
+          }
+        }
+      }
+    }
+    if (dragndrop){
+      position=origin;
+      distributePosition();
+    }
+    foundPiece:
+    rect.setFillColor(sf::Color::Blue);
+    board.resetColor();
     beingMoved=false;
     calculateTexCoord(0);
     dropPiece(board, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));

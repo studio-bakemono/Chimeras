@@ -7,6 +7,9 @@
 #include "State.hpp"
 #include "Game.hpp"
 #include "TestState.hpp"
+#include "TransitionState.hpp"
+
+
 
 MenuState::MenuState() {
 }
@@ -54,7 +57,7 @@ void MenuState::onEnter(Game &game) {
 
 
   // If it has states to switch to give them it
-  option1->menState = [](MenuState *) { return new TestState(); };
+  option1->menState = [](MenuState *) { return new TransitionState(this, new TestState()); };
   option2->menState = [](MenuState *) { return new TestState(); };
 
   // Do menuItem text settings here to make positioning relative to rectShape's
@@ -94,7 +97,7 @@ void MenuState::onEvent(sf::Event event) {
 State* MenuState::update(sf::RenderWindow& window) {
 
   
-  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) ){
+  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) ){   
     std::cout << "Entering state" <<std::endl;
     return menuItems[selected].menState(this);
   }

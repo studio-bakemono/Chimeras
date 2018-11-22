@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <array>
+
 #include <SFML/Graphics.hpp>
 #include <memory>
 
@@ -22,8 +24,12 @@ public:
   sf::Clock clock;
 
   Board board;
-  Piece testPiece;
-  
+
+  std::array<Piece, 2> playerPieces{
+  Piece{Basepiece::PAWN, sf::Vector2i(1, 2)},
+  Piece{Basepiece::PAWN, sf::Vector2i(2, 2)}
+  };
+
   
 public:
 

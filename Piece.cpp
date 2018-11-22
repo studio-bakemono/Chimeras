@@ -108,7 +108,9 @@ void Piece::dropPiece(Board &board, sf::Vector2f mousepos)
 
 void Piece::onEvent(sf::Event event, Board &board) {
   if ( beingMoved
+       // Determine what control mode is being used, compare different events
     && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
+       // If mouse button is down
     && event.mouseButton.button == sf::Mouse::Button::Left) {
     beingMoved=false;
     calculateTexCoord(0);

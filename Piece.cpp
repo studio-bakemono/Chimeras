@@ -17,7 +17,8 @@ Piece::Piece() {
   // Test knight code
   moveset.horizontal = false;
   moveset.vertical = false;
-  moveset.diagonal = true;
+  moveset.diagonal = false;
+  moveset.circular = true;
   moveset.offsets.push_back(sf::Vector2i(1,2));
 
   distributePosition();
@@ -74,6 +75,12 @@ bool Piece::validateMove(Board &board, sf::Vector2i pos){
     abs(sectorPosition.x - pos.x) ==
     abs(sectorPosition.y - pos.y)) {
     return true;
+  }
+  if (moveset.circular){
+    if (floor(sqrt(pow(sectorPosition.x - pos.x, 2.0) +pow(sectorPosition.y - pos.y, 2.0))) == 2)
+    {
+      return true;
+    }
   }
 
   // Check offsets for valid moves

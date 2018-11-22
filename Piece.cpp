@@ -17,7 +17,7 @@ Piece::Piece() {
   // Test knight code
   moveset.horizontal = false;
   moveset.vertical = false;
-  moveset.diagonal = false;
+  moveset.diagonal = true;
   moveset.circular = true;
   moveset.offsets.push_back(sf::Vector2i(1,2));
 

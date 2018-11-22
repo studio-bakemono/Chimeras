@@ -10,6 +10,8 @@ class Game;
 
 class State {
 public:
+  bool isTransition = false;
+  
   virtual void onEnter(Game &game) = 0;
   virtual void onEvent(sf::Event event) = 0;
   virtual State *update(sf::RenderWindow& window) = 0;

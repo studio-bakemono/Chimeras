@@ -14,7 +14,10 @@ class Board;
 
 class Piece {
 public:
+
+  // Size and position; defaults are for debug
   sf::Vector2f position = sf::Vector2f(20,20);
+  sf::Vector2f size = sf::Vector2f(64, 64); 
   bool dragndrop = true;
 
   sf::Vector2i sectorPosition = sf::Vector2i(4, 1);

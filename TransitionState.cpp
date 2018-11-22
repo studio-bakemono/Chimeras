@@ -35,8 +35,6 @@ std::shared_ptr<State> TransitionState::update(sf::RenderWindow& window) {
   }
   else {
     std::cout<<"."<<std::flush;
-
-    
     
     if (alpha.a < 255 && alpha.a!=255) {
 
@@ -48,7 +46,7 @@ std::shared_ptr<State> TransitionState::update(sf::RenderWindow& window) {
     }
 
     fader.setFillColor(alpha);
-    
+
     return nullptr;
   }
 }

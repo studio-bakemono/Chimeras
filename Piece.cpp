@@ -136,21 +136,32 @@ void Piece::onEnter(Game &game, Board &board) {
   atlas_width = game.atlas.getSize().x/SPRITE_SIZE;
   calculateTexCoord(0);
   rect.setScale(sf::Vector2f(1,1)*board.sectorSize/float(SPRITE_SIZE));
-  collider.width = board.sectorSize;
-  collider.height = board.sectorSize;
 
+  // Get size from board
+  size.x = board.sectorSize;
+  size.y = board.sectorSize;
+
+  // Apply sizes to rectangles
+  collider.width = size.x;
+  collider.height = size.y;
+
+  
   snapToSector(sectorPosition, board);
   distributePosition();
 }
 
 void Piece::update(sf::RenderWindow& window, Board& board) {
+ 
+  if(dragndrop&&beingMoved)
+    position = sf::Vector2f(sf::Mouse::getPosition(window))-size/2.f;
+  
+  distributePosition();
 }
 
+
+// TODO(@Nopey): Change time from int to sf::Time, also why do we need it at all
 void Piece::render(sf::RenderWindow& window, int time) {
-  if(dragndrop&&beingMoved){
-    position=(sf::Vector2f)sf::Mouse::getPosition(window);
-    distributePosition();
-  }
+  
   window.draw(rect);
   //TODO: Post Nov: Animate again
 }

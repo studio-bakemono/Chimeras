@@ -17,6 +17,10 @@ public:
   std::shared_ptr<State> transitionTo = nullptr;
 
   sf::Clock timer;
+
+  sf::RectangleShape fader;
+  sf::Color alpha = sf::Color(0,0,0,0);
+  const int fadeSpeed = 2;
   
 public:
 

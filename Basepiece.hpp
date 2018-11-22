@@ -9,6 +9,7 @@ enum Basepiece{
   KNIGHT, // Fish
   QUEEN, // Cat
   KING, // Lion
+  CIRCLE, //Circle
   LEN
 };
 
@@ -30,7 +31,8 @@ inline std::string basepiece_to_string(Basepiece piece){
     "Bishop",
     "Knight",
     "Queen",
-    "King"
+    "King",
+    "Circle",
   };
   return BASEPIECE_NAME[piece];
 }

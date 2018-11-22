@@ -80,6 +80,12 @@ bool Piece::validateMove(Board &board, sf::Vector2i pos){
       return true;
     }
   }
+  if (moveset.circular){
+    if (floor(sqrt(pow(sectorPosition.x - pos.x, 2.0) +pow(sectorPosition.y - pos.y, 2.0))) == 2)
+    {
+      return true;
+    }
+  }
 
   // Check offsets for valid moves
   for (auto m : moveset.offsets) {  

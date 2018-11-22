@@ -19,7 +19,7 @@ TransitionState::~TransitionState() {
 }
 
 
-void TransitionState::onEnter(Game* game) {
+void TransitionState::onEnter(Game& game) {
 
   timer.restart();
   std::cout << "Are we calling onEnter?" << std::endl;

@@ -23,7 +23,7 @@ public:
   TransitionState(State* previousState, State* transitionState);
   ~TransitionState();
   
-  void onEnter(Game* game);
+  void onEnter(Game& game);
   void onEvent(sf::Event event);
   State* update(sf::RenderWindow& window);
   void render(sf::RenderWindow& window);  

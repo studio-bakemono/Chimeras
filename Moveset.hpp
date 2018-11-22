@@ -12,6 +12,7 @@ public:
   bool horizontal;
   bool vertical;
   bool diagonal;
+  bool circular;
   
   std::vector<sf::Vector2i> offsets;
 
@@ -23,6 +24,7 @@ public:
     ret.horizontal = (this->horizontal || m.horizontal);
     ret.vertical = (this->vertical || m.vertical);
     ret.diagonal = (this->diagonal || m.diagonal);
+    ret.circular = (this->circular || m.circular);
 
     
     // Load off left side's offsets into return 

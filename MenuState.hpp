@@ -10,7 +10,8 @@
 #include <vector>
 #include <iostream>
 #include <cstdint>
-
+#include <functional>
+#include <memory>
 
 // Forward declaration, gets included in MenuState.cpp to avoid circular inclusion
 class Game;
@@ -21,7 +22,6 @@ struct MenuItem;
 class MenuState : public State {
 public:
 
-  sf::Font font;
   sf::Text hello;
 
   const uint8_t MENU_LENGTH = 2;
@@ -30,18 +30,16 @@ public:
   
 public:
 
-  MenuState(sf::Font font);
+  MenuState();
   ~MenuState();
   
   void onEnter(Game &game);
 
   void onEvent(sf::Event event);
   
-  State* update(sf::RenderWindow& window);
+  std::shared_ptr<State> update(sf::RenderWindow& window);
 
   void render(sf::RenderWindow& window);
-
-
   
 };
 
@@ -50,7 +48,7 @@ struct MenuItem{
   std::string name;
   sf::Text displayText;
   sf::RectangleShape rect;
-  State* menState;
+  std::function<std::shared_ptr<State>(MenuState *)> menState;
 
 
   inline void updateDisplayText() {
@@ -61,10 +59,6 @@ struct MenuItem{
   MenuItem(std::string name) {
     this->name = name;
     displayText.setString(name);
-  }
-  ~MenuItem() {
-    delete menState;
-    menState = nullptr;
   }
   
 };

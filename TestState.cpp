@@ -9,20 +9,18 @@
 
 #include <iostream>
 
-TestState::TestState(sf::Font font) {
-
-  this->font = font;
-  
+TestState::TestState() {
+  std::cout<<"TestState constructed.."<<std::endl;  
 }
 
 TestState::~TestState() {
-
+  std::cout<<"TestState destroyed!"<<std::endl;
 }
 
 void TestState::onEnter(Game &game) {
 
   greeting.setString("TestState");
-  greeting.setFont(font);
+  greeting.setFont(game.font);
   greeting.setCharacterSize(20);
   greeting.setPosition(0,0);
 
@@ -47,7 +45,7 @@ void TestState::onEvent(sf::Event event) {
   testPiece.onEvent(event, board);
 }
 
-State* TestState::update(sf::RenderWindow& window) {
+std::shared_ptr<State> TestState::update(sf::RenderWindow& window) {
 
   board.update(window);
   testPiece.update(window, board);

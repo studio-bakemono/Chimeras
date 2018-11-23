@@ -27,6 +27,8 @@ public:
   std::vector<std::vector<sf::FloatRect>> sectors;
   std::vector<std::vector<sf::RectangleShape>> debugSectors;
 
+  std::vector<Piece*> pieces;
+
   
   
 public:

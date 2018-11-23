@@ -12,7 +12,7 @@
 #include <cmath>
 
 
-Piece::Piece(Basepiece basepiece, sf::Vector2i sectorPosition) {
+Piece::Piece(Game &game,  Board &board, Basepiece basepiece, sf::Vector2i sectorPosition, int player) : player(player){
   this->basepiece = basepiece;
   this->sectorPosition = sectorPosition;
 
@@ -26,6 +26,25 @@ Piece::Piece(Basepiece basepiece, sf::Vector2i sectorPosition) {
   distributePosition();
   basepiece = Basepiece::PAWN;
   consumeBasepiece(basepiece);
+
+
+  rect.setTexture(game.atlas);
+  atlas_width = game.atlas.getSize().x/SPRITE_SIZE;
+  calculateTexCoord(0);
+  rect.setScale(sf::Vector2f(1,1)*board.sectorSize/float(SPRITE_SIZE));
+
+  // Get size from board
+  size.x = board.sectorSize;
+  size.y = board.sectorSize;
+
+  // Apply sizes to rectangles
+  collider.width = size.x;
+  collider.height = size.y;
+
+  
+  snapToSector(sectorPosition, board);
+  distributePosition();
+
 }
 
 
@@ -141,27 +160,7 @@ void Piece::onEvent(sf::Event event, Board &board) {
 
 
 
-void Piece::onEnter(Game &game, Board &board) {
-  rect.setTexture(game.atlas);
-  atlas_width = game.atlas.getSize().x/SPRITE_SIZE;
-  calculateTexCoord(0);
-  rect.setScale(sf::Vector2f(1,1)*board.sectorSize/float(SPRITE_SIZE));
-
-  // Get size from board
-  size.x = board.sectorSize;
-  size.y = board.sectorSize;
-
-  // Apply sizes to rectangles
-  collider.width = size.x;
-  collider.height = size.y;
-
-  
-  snapToSector(sectorPosition, board);
-  distributePosition();
-}
-
 void Piece::update(sf::RenderWindow& window, Board& board) {
- 
   if(dragndrop&&beingMoved)
     position = sf::Vector2f(sf::Mouse::getPosition(window))-size/2.f;
   
@@ -169,11 +168,11 @@ void Piece::update(sf::RenderWindow& window, Board& board) {
 }
 
 
-// TODO(@Nopey): Change time from int to sf::Time, also why do we need it at all
+// TODO: Change time from int to sf::Time
 void Piece::render(sf::RenderWindow& window, int time) {
-  
+
   window.draw(rect);
-  //TODO: Post Nov: Animate again
+  //TODO: Post Nov: Animate again (uses time param)
 }
 
 void Piece::calculateTexCoord(int time){

@@ -71,7 +71,22 @@ Board::Board(Game &game, sf::Vector2f position,
     }
    }
    resetColor();  
-  
+
+  pieces.reserve(boardSize*boardSize);
+  for(int x=0; x < boardSize; x++){
+    for(int y=0; y < boardSize; y++){
+      int player;
+      if(y < 2){
+        player=0;
+      }else if(boardSize-y-1 < 2){
+        player=1;
+      }else{
+        pieces.push_back(nullptr);
+        continue;
+      }
+      pieces.push_back(new Piece(game, *this, Basepiece::PAWN, sf::Vector2i(x+1, y+1), player));
+    }
+  }
 }
 
 Board::~Board() {

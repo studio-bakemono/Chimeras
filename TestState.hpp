@@ -10,9 +10,6 @@
 #include "State.hpp"
 #include "Board.hpp"
 #include "Piece.hpp"
-#include "Pieces.hpp"
-
-// Forward delcaration to avoid circular headers
 
 class Game;
 
@@ -24,8 +21,6 @@ public:
 
   Board board;
 
-  Pieces pieces;
-  
 public:
 
   TestState();

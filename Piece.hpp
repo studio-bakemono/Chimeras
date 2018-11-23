@@ -34,13 +34,14 @@ public:
 
   void dropPiece(Board &board, sf::Vector2f mousepos);
 
+  int player;
   int atlas_width;
   bool facing_front = true;
   int animal;
   Basepiece basepiece = Basepiece::PAWN;
 
 public:
-  Piece(Basepiece basepiece, sf::Vector2i sectorPosition);
+  Piece(Game &game, Board &board, Basepiece basepiece, sf::Vector2i sectorPosition, int player);
   ~Piece();
 
   void consumePiece(Piece other, bool XORMode);
@@ -54,7 +55,6 @@ public:
   void calculateTexCoord(int time);
 
 
-  void onEnter(Game &game, Board &board);
   void update(sf::RenderWindow &window, Board &board);
   void onEvent(sf::Event event, Board &board);
   void render(sf::RenderWindow& window, int time);

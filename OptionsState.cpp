@@ -2,12 +2,12 @@
  Studio Bakemono, 2018
  */
 
-#include "OptionsState.cpp"
 
 #include "MenuState.hpp"
 #include "Game.hpp"
 #include "TestState.hpp"
 #include "TransitionState.hpp"
+#include "OptionsState.hpp"
 
 OptionsState::OptionsState() {
 }
@@ -18,7 +18,7 @@ OptionsState::~OptionsState() {
 }
 
 
-virtual void MenuState::onEnter(Game &game) {
+void OptionsState::onEnter(Game &game) {
   
   //Set up the title
   hello.setString("Chimeras");
@@ -38,8 +38,8 @@ virtual void MenuState::onEnter(Game &game) {
   MenuItem* option1 = &menuItems[0];
   MenuItem* option2 = &menuItems[1];
   
-  option1->name = "Option 1";
-  option2->name = "Option 2";
+  option1->name = "Options";
+  option2->name = "Play";
   
   option1->rect.setSize(sf::Vector2f(100,50));
   option1->rect.setOutlineColor(sf::Color::Red);
@@ -55,8 +55,8 @@ virtual void MenuState::onEnter(Game &game) {
   
   
   // If it has states to switch to give them it
-  option1->menState = [](MenuState *) { return std::make_shared<TransitionState>(std::make_shared<TestState>()); };
-  option2->menState = [](MenuState *) { return std::make_shared<TestState>(); };
+  option1->menState = [](State *) { return std::make_shared<OptionsState>(); };
+  option2->menState = [](State *) { return std::make_shared<TransitionState> (std::make_shared<TestState>()); };
   
   // Do menuItem text settings here to make positioning relative to rectShape's
   for ( auto& m : menuItems ) {
@@ -73,7 +73,7 @@ virtual void MenuState::onEnter(Game &game) {
 }
 
 
-virtual void OptionsState::onEvent(sf::Event event) {
+void OptionsState::onEvent(sf::Event event) {
   //Cycle through the possible states
   if ( (event.type == sf::Event::KeyPressed)  && (event.key.code == sf::Keyboard::Down)){
     menuItems[selected].rect.setFillColor(sf::Color::Black);
@@ -89,12 +89,19 @@ virtual void OptionsState::onEvent(sf::Event event) {
     
     std::cout << "Upkey pressed, in state " << selected << std::endl;
   }
+  
+  if ( (event.type == sf::Event::KeyPressed)  && (event.key.code == sf::Keyboard::Enter)){
+    transitioning = true;
+    
+    std::cout << "Enter key pressed, transitioning " << selected << std::endl;
+  }
+  
 }
 
-virtual std::shared_ptr<State> OptionsState::update(sf::RenderWindow& window) {
+std::shared_ptr<State> OptionsState::update(sf::RenderWindow& window) {
   
   
-  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) ){
+  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)  && (transitioning == true)){
     std::cout << "Entering state" <<std::endl;
     return menuItems[selected].menState(this);
   }
@@ -104,7 +111,7 @@ virtual std::shared_ptr<State> OptionsState::update(sf::RenderWindow& window) {
   
 }
 
-virtual void OptionsState::render(sf::RenderWindow& window) {
+void OptionsState::render(sf::RenderWindow& window) {
   
   window.draw(hello);
   

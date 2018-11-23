@@ -5,8 +5,11 @@
 #pragma once
 
 #include "State.hpp"
-#include <SFML/Graphics.hpp>
 #include "MenuState.hpp"
+
+#include <SFML/Graphics.hpp>
+
+class MenuState;
 
 
 class OptionsState : public MenuState{

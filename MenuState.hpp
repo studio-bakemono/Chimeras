@@ -27,6 +27,7 @@ public:
   uint8_t MENU_LENGTH = 0;
   std::vector<MenuItem> menuItems;  
   int selected = 0;
+  bool transitioning = false;
   
 public:
 

@@ -41,7 +41,7 @@ void MenuState::onEnter(Game &game) {
   MenuItem* option2 = &menuItems[1];
 
   option1->name = "Play";
-  option2->name = "Also plays";
+  option2->name = "Options";
 
   option1->rect.setSize(sf::Vector2f(100,50));
   option1->rect.setOutlineColor(sf::Color::Red);
@@ -91,13 +91,18 @@ void MenuState::onEvent(sf::Event event) {
     
     std::cout << "Upkey pressed, in state " << selected << std::endl;
   }
+  if ( (event.type == sf::Event::KeyPressed)  && (event.key.code == sf::Keyboard::Enter)){
+    transitioning = true;
+    
+    std::cout << "Enter key pressed, transitioning " << selected << std::endl;
+  }
 }
 
 
 std::shared_ptr<State> MenuState::update(sf::RenderWindow& window) {
 
   
-  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) ){
+  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && (transitioning == true) ){
     std::cout << "Entering state" <<std::endl;
     return menuItems[selected].menState(this);
   }

@@ -10,6 +10,9 @@
 #include "TransitionState.hpp"
 #include "OptionsState.hpp"
 
+#include <cmath>
+#include <cstdint>
+
 
 MenuState::MenuState() {
 }
@@ -20,8 +23,21 @@ MenuState::~MenuState() {
 }
 
 
-void MenuState::updateBreath() {
+void MenuState::updateBreath(sf::Time timePassed) {
 
+  
+  
+  uint8_t alpha = (uint8_t)(
+			    minBreath + (1.0+sin(timePassed.asSeconds()*breathSpeedModifier*M_PI)
+					 )*(
+					    maxBreath-minBreath
+					    )/2.0
+			    );
+				  
+  
+  breathAlpha.a = alpha;
+  
+  /*
   if (isIncreasing) {
     if (breathAlpha.a + 1 < maxBreath )
       breathAlpha.a++;
@@ -33,8 +49,9 @@ void MenuState::updateBreath() {
       breathAlpha.a--;
     else
       isIncreasing = true;
-      
+
   }
+*/
   
 
   breathFader.setFillColor(breathAlpha);
@@ -67,6 +84,9 @@ void MenuState::onEnter(Game &game) {
   background.scale(backgroundScale );
 //std::cout << "Error Loading main_menu.png!" << std::endl;
 
+
+  breathClock.restart();
+  
   breathFader.setPosition(0,0);
   breathFader.setSize(sf::Vector2f(game.WINDOW_WIDTH, game.WINDOW_HEIGHT));
   
@@ -143,7 +163,7 @@ void MenuState::onEvent(sf::Event event) {
 std::shared_ptr<State> MenuState::update(sf::RenderWindow& window) {
 
 
-  updateBreath();
+  updateBreath(breathClock.getElapsedTime());
   
   if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && (transitioning == true) ){
     std::cout << "Entering state" <<std::endl;
@@ -158,6 +178,8 @@ std::shared_ptr<State> MenuState::update(sf::RenderWindow& window) {
 void MenuState::render(sf::RenderWindow& window) {
 
   window.draw(background);
+
+  window.draw(breathFader);
   
   window.draw(hello);
   
@@ -166,8 +188,6 @@ void MenuState::render(sf::RenderWindow& window) {
     window.draw(i->displayText);
   }
 
-
-  window.draw(breathFader);
 
 }
 

@@ -4,14 +4,13 @@
 
 #pragma once
 
-#include <array>
-
 #include <SFML/Graphics.hpp>
 #include <memory>
 
 #include "State.hpp"
 #include "Board.hpp"
 #include "Piece.hpp"
+#include "Pieces.hpp"
 
 // Forward delcaration to avoid circular headers
 
@@ -25,11 +24,7 @@ public:
 
   Board board;
 
-  std::array<Piece, 2> playerPieces{
-  Piece{Basepiece::PAWN, sf::Vector2i(1, 2)},
-  Piece{Basepiece::PAWN, sf::Vector2i(2, 2)}
-  };
-
+  Pieces pieces;
   
 public:
 

@@ -48,22 +48,25 @@ void Game::run(){
   while ( window.isOpen() ) {
     sf::Event event;
     while (window.pollEvent(event)) {
-	    if (event.type == sf::Event::Closed) {
+      if (event.type == sf::Event::Closed) {
 
         // if the window gets closed
-        window.close();
-        return;
-
-      } else {
-        state->onEvent(event);
+	window.close();
+        return;	
+      }
+      else {
+	if (window.hasFocus())
+	  state->onEvent(event);
       }
     }
 
     // Update
-    std::shared_ptr<State> next = state->update(window);
-    if(next){
-      to_state(next);
-      continue;
+    if (window.hasFocus()) {
+      std::shared_ptr<State> next = state->update(window);
+      if(next){
+	to_state(next);
+	continue;
+      }
     }
 
     // Render

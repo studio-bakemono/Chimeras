@@ -20,6 +20,26 @@ MenuState::~MenuState() {
 }
 
 
+void MenuState::updateBreath() {
+
+  if (isIncreasing) {
+    if (breathAlpha.a + 1 < maxBreath )
+      breathAlpha.a++;
+    else
+      isIncreasing = false;
+  }
+  else {
+    if (breathAlpha.a - 1 > minBreath )
+      breathAlpha.a--;
+    else
+      isIncreasing = true;
+      
+  }
+  
+
+  breathFader.setFillColor(breathAlpha);
+  
+}
 void MenuState::onEnter(Game &game) {
 
   //Set up the title
@@ -30,6 +50,27 @@ void MenuState::onEnter(Game &game) {
   hello.setPosition(sf::Vector2f( game.window.getSize().x/2 - 10 - hello.getLocalBounds().width/2,
 				  game.window.getSize().y/2 - hello.getLocalBounds().height/2 ));
   
+
+
+  // Load main menu
+  //if ( !
+
+  
+  backgroundTex.loadFromFile("assets/main_menu.png");
+  background.setTexture(backgroundTex);
+
+  sf::Vector2f backgroundScale = sf::Vector2f(game.WINDOW_WIDTH/background.getLocalBounds().width,
+					      game.WINDOW_HEIGHT/background.getLocalBounds().height);
+
+  
+  
+  background.scale(backgroundScale );
+//std::cout << "Error Loading main_menu.png!" << std::endl;
+
+  breathFader.setPosition(0,0);
+  breathFader.setSize(sf::Vector2f(game.WINDOW_WIDTH, game.WINDOW_HEIGHT));
+  
+
   //Create the menu options
 
 
@@ -96,6 +137,8 @@ void MenuState::onEvent(sf::Event event) {
 
 std::shared_ptr<State> MenuState::update(sf::RenderWindow& window) {
 
+
+  updateBreath();
   
   if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) ){
     std::cout << "Entering state" <<std::endl;
@@ -109,13 +152,17 @@ std::shared_ptr<State> MenuState::update(sf::RenderWindow& window) {
 
 void MenuState::render(sf::RenderWindow& window) {
 
+  window.draw(background);
+  
   window.draw(hello);
   
   for (std::vector<MenuItem>::const_iterator i = menuItems.begin(); i != menuItems.end(); ++i){
     window.draw(i->rect);    
     window.draw(i->displayText);
   }
-  
+
+
+  window.draw(breathFader);
 
 }
 

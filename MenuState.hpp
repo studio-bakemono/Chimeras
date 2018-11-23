@@ -27,11 +27,24 @@ public:
   const uint8_t MENU_LENGTH = 2;
   std::vector<MenuItem> menuItems;  
   int selected = 0;
+
+
+  sf::Texture backgroundTex;
+  sf::Sprite background;
+  sf::RectangleShape breathFader;
+  sf::Color breathAlpha = sf::Color(0,0,0,220);
+  bool isIncreasing = true;
+
+  const int minBreath = 100;
+  const int maxBreath = 220;
+  
   
 public:
 
   MenuState();
   ~MenuState();
+
+  void updateBreath();
   
   void onEnter(Game &game);
 

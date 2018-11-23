@@ -73,6 +73,7 @@ Board::Board(Game &game, sf::Vector2f position,
    }
    resetColor();  
 
+  //#### Add pieces to board
   //TODO: Extend board to higher sizes
   Basepiece const CHESS_ORDER[8] = {
     Basepiece::ROOK,

@@ -12,21 +12,18 @@
 #include <cmath>
 
 
-Piece::Piece(Game &game,  Board &board, Basepiece basepiece, sf::Vector2i sectorPosition, int player) : player(player){
-  this->basepiece = basepiece;
-  this->sectorPosition = sectorPosition;
+Piece::Piece(Game &game,  Board &board, Basepiece basepiece, sf::Vector2i sectorPosition, int player) :
+  player(player),
+  basepiece(basepiece) {
+  facing_front = !player;
+  consumeBasepiece(basepiece);
 
   // Test knight code
   moveset.horizontal = false;
   moveset.vertical = false;
-  moveset.diagonal = true;
+  moveset.diagonal = false;
   moveset.circular = true;
   moveset.offsets.push_back(sf::Vector2i(1,2));
-
-  distributePosition();
-  basepiece = Basepiece::PAWN;
-  consumeBasepiece(basepiece);
-
 
   rect.setTexture(game.atlas);
   atlas_width = game.atlas.getSize().x/SPRITE_SIZE;
@@ -51,16 +48,15 @@ Piece::Piece(Game &game,  Board &board, Basepiece basepiece, sf::Vector2i sector
 Piece::~Piece() {
 }
 
-void Piece::consumePiece(Piece other, bool XORMode) {
-  consumeMoveset(other.moveset, XORMode);
+void Piece::consumePiece(Piece other) {
+  consumeMoveset(other.moveset, other.player == player);
   consumeBasepiece(other.basepiece);
 }
 
 
 void Piece::consumeMoveset(Moveset moves, bool XORMode) {
   if (XORMode) {
-    //TODO: XOR mode
-    this->moveset = this->moveset || moves;
+    this->moveset = this->moveset ^ moves;
   }else{
     this->moveset = this->moveset || moves;
   }
@@ -68,6 +64,7 @@ void Piece::consumeMoveset(Moveset moves, bool XORMode) {
 
 void Piece::consumeBasepiece(Basepiece bp) {
   animal = combine_basepieces(basepiece, bp);
+//  std::cout << "bp: " << bp << " us: " << basepiece << " animal: " << animal << std::endl;
   if (basepiece != Basepiece::KING) {
     basepiece = bp;
   }
@@ -78,7 +75,7 @@ void Piece::snapToSector(sf::Vector2i sector, Board& board) {
   position = sf::Vector2f( board.sectors[sector.y-1][sector.x-1].left, board.sectors[sector.y-1][sector.x-1].top );
 }
 
-bool Piece::validateMove(Board &board, sf::Vector2i pos){
+bool Piece::validateMove(Board &board, sf::Vector2i sectorPosition, sf::Vector2i pos){
   // No stalling :3
   if (pos == sectorPosition){ 
     return false;
@@ -98,8 +95,12 @@ bool Piece::validateMove(Board &board, sf::Vector2i pos){
     return true;
   }
   if (moveset.circular){
-    if (floor(sqrt(pow(sectorPosition.x - pos.x, 2.0) +pow(sectorPosition.y - pos.y, 2.0))) == 2)
-    {
+    double const RAD = 3.0;
+    double l = abs(sectorPosition.x - pos.x);
+    double s = abs(sectorPosition.y - pos.y);
+    if (l<s)
+      std::swap(s,l);
+    if(round(sqrt(RAD*RAD-s*s))==l){
       return true;
     }
   }
@@ -113,12 +114,12 @@ bool Piece::validateMove(Board &board, sf::Vector2i pos){
  return false;
 }
 
-void Piece::dropPiece(Board &board, sf::Vector2f mousepos)
+void Piece::dropPiece(Board &board, sf::Vector2i &sectorPosition, sf::Vector2f mousepos)
 {
   for ( int i = 0; i < board.sectors.size(); i++ ) {
     for ( int r = 0; r < board.sectors[i].size(); r++ ) {
       if ( board.sectors[r][i].contains(mousepos) ) {
-        if(validateMove(board, sf::Vector2i(i+1, r+1))){
+        if(validateMove(board, sectorPosition, sf::Vector2i(i+1, r+1))){
           sf::FloatRect snapRect = board.sectors[r][i];
           sectorPosition=sf::Vector2i(i+1, r+1);
           position.x = snapRect.left;
@@ -135,7 +136,7 @@ void Piece::dropPiece(Board &board, sf::Vector2f mousepos)
   }
 }
 
-void Piece::onEvent(sf::Event event, Board &board) {
+void Piece::onEvent(sf::Vector2i &sectorPosition, sf::Event event, Board &board) {
   if ( beingMoved
        // Determine what control mode is being used, compare different events
     && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
@@ -143,7 +144,7 @@ void Piece::onEvent(sf::Event event, Board &board) {
     && event.mouseButton.button == sf::Mouse::Button::Left) {
     beingMoved=false;
     calculateTexCoord(0);
-    dropPiece(board, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
+    dropPiece(board, sectorPosition, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
     board.resetColor();
   }
   if ((!beingMoved)
@@ -154,7 +155,7 @@ void Piece::onEvent(sf::Event event, Board &board) {
     beingMoved=true;
     calculateTexCoord(0);
     origin=position;
-    board.colorWith(*this);
+    board.colorWith(sectorPosition, *this);
   }
 }
 
@@ -179,6 +180,7 @@ void Piece::calculateTexCoord(int time){
   int a = animal;
   a = a * 2 + (facing_front ? 0 : 1);
   a = a * 2 + (beingMoved ? 0 : 1);
+//  std::cout<<"Sprite count: " << atlas_width*atlas_width << " Sprite id: " << a << std::endl;
   rect.setTextureRect(sf::IntRect(
     SPRITE_SIZE * (a % atlas_width),
     SPRITE_SIZE * (a / atlas_width),

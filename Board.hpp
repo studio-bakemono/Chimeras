@@ -38,9 +38,10 @@ public:
 
   ~Board();
 
-  void colorWith(Piece &piece);
+  void colorWith(sf::Vector2i from, Piece &piece);
   void resetColor();
   void update(sf::RenderWindow& window);
+  void onEvent(sf::Event event);
   void render(sf::RenderWindow& window);
   
   

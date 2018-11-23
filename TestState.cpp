@@ -10,11 +10,9 @@
 #include <iostream>
 
 TestState::TestState() {
-  std::cout<<"TestState constructed.."<<std::endl;  
 }
 
 TestState::~TestState() {
-  std::cout<<"TestState destroyed!"<<std::endl;
 }
 
 void TestState::onEnter(Game &game) {
@@ -38,11 +36,7 @@ void TestState::onEnter(Game &game) {
 }
 
 void TestState::onEvent(sf::Event event) {
-  for(auto &piece : board.pieces) {
-    if(piece)
-      piece->onEvent(event, board);
-  }
-
+  board.onEvent(event);
 }
 
 std::shared_ptr<State> TestState::update(sf::RenderWindow& window) {

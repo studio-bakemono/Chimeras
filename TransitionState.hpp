@@ -20,7 +20,7 @@ public:
 
   sf::RectangleShape fader;
   sf::Color alpha = sf::Color(0,0,0,0);
-  const int fadeSpeed = 2;
+  const int fadeSpeed = 3;
   
 public:
 

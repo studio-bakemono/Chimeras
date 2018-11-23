@@ -6,6 +6,7 @@
 #include "Piece.hpp"
 
 #include <iostream>
+#include <cassert>
 
 Board::Board() {
   
@@ -72,19 +73,33 @@ Board::Board(Game &game, sf::Vector2f position,
    }
    resetColor();  
 
+  //TODO: Extend board to higher sizes
+  Basepiece const CHESS_ORDER[8] = {
+    Basepiece::ROOK,
+    Basepiece::KNIGHT,
+    Basepiece::BISHOP,
+    Basepiece::KING,
+    Basepiece::QUEEN,
+    Basepiece::KNIGHT,
+    Basepiece::CIRCLE,
+    Basepiece::ROOK,
+  };
+  assert(boardSize<=sizeof(CHESS_ORDER)/sizeof(CHESS_ORDER[0]));
   pieces.reserve(boardSize*boardSize);
   for(int x=0; x < boardSize; x++){
     for(int y=0; y < boardSize; y++){
-      int player;
+      bool player;
       if(y < 2){
-        player=0;
+        player=false;
       }else if(boardSize-y-1 < 2){
-        player=1;
+        player=true;
       }else{
         pieces.push_back(nullptr);
         continue;
       }
-      pieces.push_back(new Piece(game, *this, Basepiece::PAWN, sf::Vector2i(x+1, y+1), player));
+      pieces.push_back(new Piece(game, *this,
+        (y%(boardSize-1)) ? Basepiece::PAWN : CHESS_ORDER[player?x:(boardSize-x-1)],
+        sf::Vector2i(x+1, y+1), player));
     }
   }
 }
@@ -93,7 +108,7 @@ Board::~Board() {
 
 }
 
-void Board::colorWith(Piece &piece) {
+void Board::colorWith(sf::Vector2i from, Piece &piece) {
   // Draw the chessboard checkered pattern
   sf::Color colors[] = {
     sf::Color::White,
@@ -103,7 +118,7 @@ void Board::colorWith(Piece &piece) {
   };
   for (int i = 0; i < boardSize; i++) {
     for (int r = 0; r < boardSize; r++) {
-      debugSectors[r][i].setFillColor(colors[(r%2^i%2)+2*(piece.validateMove(*this, sf::Vector2i(i+1,r+1)))]);
+      debugSectors[r][i].setFillColor(colors[(r%2^i%2)+2*(piece.validateMove(*this, from, sf::Vector2i(i+1,r+1)))]);
     }
   }
 }
@@ -138,6 +153,30 @@ void Board::update(sf::RenderWindow& window) {
   }
   
   
+}
+
+//TODO: Make this slightly less jank.
+// For now, it Works, and we don't have to rewrite Piece.cpp hardly at all
+void Board::onEvent(sf::Event event){
+  for(int x=0; x < boardSize; x++) {
+    for(int y=0; y < boardSize; y++) {
+      auto piece = pieces[x*boardSize+y];
+      pieces[x*boardSize+y] = nullptr;
+      if(piece){
+        auto pos = sf::Vector2i(x+1,y+1);
+        piece->onEvent(pos, event, *this);
+        pos.x-=1;
+        pos.y-=1;
+        auto &prey = pieces[pos.x*boardSize+pos.y];
+        if (prey){
+          piece->consumePiece(*prey);
+          piece->calculateTexCoord(0);
+          delete prey;
+        }
+        pieces[pos.x*boardSize+pos.y] = piece;
+      }
+    }
+  }
 }
 
 void Board::render(sf::RenderWindow& window) {

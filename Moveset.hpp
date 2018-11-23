@@ -60,23 +60,16 @@ public:
     
     // If right side has an offet ret doesn't push it back to ret's offsets
     for (auto a : offsets) {
-      for ( auto b : m.offsets ) {
-      	if ( a == b )
-          //Will they notice?
-          goto continueOuterLoop;
+      auto &o = m.offsets;
+      if(std::find(o.begin(), o.end(), a) == o.end()){
+        ret.offsets.push_back(a);
       }
-      ret.offsets.push_back(a);
-      continueOuterLoop:
-      continue;
     }
     for (auto a : m.offsets) {
-      for ( auto b : offsets ) {
-      	if ( a == b )
-          goto continueSecondOuterLoop;
+      auto &o = offsets;
+      if(std::find(o.begin(), o.end(), a) == o.end()){
+        ret.offsets.push_back(a);
       }
-      ret.offsets.push_back(a);
-      continueSecondOuterLoop:
-      continue;
     }
     return ret;
   }

@@ -17,13 +17,43 @@ Piece::Piece(Game &game,  Board &board, Basepiece basepiece, sf::Vector2i sector
   basepiece(basepiece) {
   facing_front = !player;
   consumeBasepiece(basepiece);
+  switch (basepiece){
+    case Basepiece::KING:
+      moveset.offsets.push_back(sf::Vector2i( 1, 0));
+      moveset.offsets.push_back(sf::Vector2i( 0, 1));
+      moveset.offsets.push_back(sf::Vector2i(-1, 0));
+      moveset.offsets.push_back(sf::Vector2i( 0,-1));
+      break;
+    case Basepiece::QUEEN:
+      moveset.diagonal = true;
+      moveset.horizontal = true;
+      moveset.vertical = true;
+      break;
+    case Basepiece::PAWN:
+      moveset.offsets.push_back(sf::Vector2i( 0, player ? -1 : 1));
+      break;
+    case Basepiece::ROOK:
+      moveset.horizontal = true;
+      moveset.vertical = true;
+      break;
+    case Basepiece::BISHOP:
+      moveset.diagonal = true;
+      break;
+    case Basepiece::KNIGHT:
+      moveset.offsets.push_back(sf::Vector2i( 1, 2));
+      moveset.offsets.push_back(sf::Vector2i( 1,-2));
+      moveset.offsets.push_back(sf::Vector2i(-1, 2));
+      moveset.offsets.push_back(sf::Vector2i(-1,-2));
 
-  // Test knight code
-  moveset.horizontal = false;
-  moveset.vertical = false;
-  moveset.diagonal = false;
-  moveset.circular = true;
-  moveset.offsets.push_back(sf::Vector2i(1,2));
+      moveset.offsets.push_back(sf::Vector2i( 2, 1));
+      moveset.offsets.push_back(sf::Vector2i( 2,-1));
+      moveset.offsets.push_back(sf::Vector2i(-2, 1));
+      moveset.offsets.push_back(sf::Vector2i(-2,-1));
+      break;
+    case Basepiece::CIRCLE:
+      moveset.circular = true;
+      break;
+  }
 
   rect.setTexture(game.atlas);
   atlas_width = game.atlas.getSize().x/SPRITE_SIZE;

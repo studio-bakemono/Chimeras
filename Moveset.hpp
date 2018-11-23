@@ -9,10 +9,10 @@
 class Moveset {
 public:
 
-  bool horizontal;
-  bool vertical;
-  bool diagonal;
-  bool circular;
+  bool horizontal=false;
+  bool vertical=false;
+  bool diagonal=false;
+  bool circular=false;
   
   std::vector<sf::Vector2i> offsets;
 
@@ -59,13 +59,23 @@ public:
 
     
     // If right side has an offet ret doesn't push it back to ret's offsets
-    for (auto a : ret.offsets) {
+    for (auto a : offsets) {
       for ( auto b : m.offsets ) {
       	if ( a == b )
+          //Will they notice?
           goto continueOuterLoop;
       }
       ret.offsets.push_back(a);
       continueOuterLoop:
+      continue;
+    }
+    for (auto a : m.offsets) {
+      for ( auto b : offsets ) {
+      	if ( a == b )
+          goto continueSecondOuterLoop;
+      }
+      ret.offsets.push_back(a);
+      continueSecondOuterLoop:
       continue;
     }
     return ret;

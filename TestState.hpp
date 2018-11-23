@@ -10,6 +10,7 @@
 #include "State.hpp"
 #include "Board.hpp"
 #include "Piece.hpp"
+#include "Pieces.hpp"
 
 // Forward delcaration to avoid circular headers
 
@@ -22,8 +23,8 @@ public:
   sf::Clock clock;
 
   Board board;
-  Piece testPiece;
-  
+
+  Pieces pieces;
   
 public:
 

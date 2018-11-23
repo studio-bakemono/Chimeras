@@ -36,19 +36,30 @@ void TestState::onEnter(Game &game) {
   
   board = Board(game, position, 8, boardWidth, boardHeight);
 
-  testPiece.onEnter(game, board);
+  for(auto &piece : pieces.playerPieces) {
+    piece.onEnter(game, board);
+  }
 
-  
+  for(auto &piece : pieces.enemyPieces) {
+    piece.onEnter(game, board);
+  }
+
 }
 
 void TestState::onEvent(sf::Event event) {
-  testPiece.onEvent(event, board);
+  for(auto &piece : pieces.playerPieces) {
+    piece.onEvent(event, board);
+  }
+
 }
 
 std::shared_ptr<State> TestState::update(sf::RenderWindow& window) {
 
   board.update(window);
-  testPiece.update(window, board);
+
+  for(auto &piece : pieces.playerPieces) {
+    piece.update(window, board);
+  }
   
   return nullptr;
 }
@@ -58,6 +69,12 @@ void TestState::render(sf::RenderWindow& window) {
   window.draw(greeting);
 
   board.render(window);
-  testPiece.render(window, clock.getElapsedTime().asMilliseconds());
-  
+  for(auto &piece : pieces.playerPieces) {
+    piece.render(window, clock.getElapsedTime().asMilliseconds());
+  }
+
+  for(auto &piece : pieces.enemyPieces) {
+    piece.render(window, clock.getElapsedTime().asMilliseconds());
+  }
+
 }

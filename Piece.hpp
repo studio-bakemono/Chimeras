@@ -20,7 +20,7 @@ public:
   sf::Vector2f size = sf::Vector2f(64, 64); 
   bool dragndrop = true;
 
-  sf::Vector2i sectorPosition = sf::Vector2i(4, 1);
+  sf::Vector2i sectorPosition = sf::Vector2i(-1, -1);
   
   Moveset moveset;
   
@@ -40,12 +40,12 @@ public:
   Basepiece basepiece = Basepiece::PAWN;
 
 public:
-  Piece();
+  Piece(Basepiece basepiece, sf::Vector2i sectorPosition);
   ~Piece();
 
   void consumePiece(Piece other, bool XORMode);
-    void consumeMoveset(Moveset moves, bool XORMode);
-    void consumeBasepiece(Basepiece other);
+  void consumeMoveset(Moveset moves, bool XORMode);
+  void consumeBasepiece(Basepiece other);
 
   void snapToSector(sf::Vector2i sector, Board &board);
   bool validateMove(Board &board, sf::Vector2i pos);

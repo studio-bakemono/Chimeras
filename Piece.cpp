@@ -12,7 +12,9 @@
 #include <cmath>
 
 
-Piece::Piece() {
+Piece::Piece(Basepiece basepiece, sf::Vector2i sectorPosition) {
+  this->basepiece = basepiece;
+  this->sectorPosition = sectorPosition;
 
   // Test knight code
   moveset.horizontal = false;

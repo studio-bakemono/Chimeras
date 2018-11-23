@@ -24,7 +24,7 @@ public:
 
   sf::Text hello;
 
-  const uint8_t MENU_LENGTH = 2;
+  uint8_t MENU_LENGTH = 0;
   std::vector<MenuItem> menuItems;  
   int selected = 0;
   
@@ -33,13 +33,13 @@ public:
   MenuState();
   ~MenuState();
   
-  void onEnter(Game &game);
+  virtual void onEnter(Game &game);
 
-  void onEvent(sf::Event event);
+  virtual void onEvent(sf::Event event);
   
-  std::shared_ptr<State> update(sf::RenderWindow& window);
+  virtual std::shared_ptr<State> update(sf::RenderWindow& window);
 
-  void render(sf::RenderWindow& window);
+  virtual void render(sf::RenderWindow& window);
   
 };
 

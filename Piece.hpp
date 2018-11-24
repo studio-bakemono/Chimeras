@@ -20,8 +20,6 @@ public:
   sf::Vector2f size = sf::Vector2f(64, 64); 
   bool dragndrop = true;
 
-  sf::Vector2i sectorPosition = sf::Vector2i(-1, -1);
-  
   Moveset moveset;
   
   sf::Sprite rect;
@@ -32,31 +30,32 @@ public:
   
   sf::Vector2f origin;
 
-  void dropPiece(Board &board, sf::Vector2f mousepos);
+  void dropPiece(Board &board, sf::Vector2i &sectorPosition, sf::Vector2f mousepos);
 
+  int player;
   int atlas_width;
-  bool facing_front = true;
+  bool facing_front;
   int animal;
   Basepiece basepiece = Basepiece::PAWN;
 
 public:
-  Piece(Basepiece basepiece, sf::Vector2i sectorPosition);
+  Piece(Game &game, Board &board, Basepiece basepiece, sf::Vector2i sectorPosition, int player);
   ~Piece();
 
-  void consumePiece(Piece other, bool XORMode);
+  void consumePiece(Piece other);
   void consumeMoveset(Moveset moves, bool XORMode);
   void consumeBasepiece(Basepiece other);
 
   void snapToSector(sf::Vector2i sector, Board &board);
-  bool validateMove(Board &board, sf::Vector2i pos);
+  //TODO: Refractor validate into moveset?
+  bool validateMove(Board &board, sf::Vector2i from, sf::Vector2i to);
 
   void distributePosition();
   void calculateTexCoord(int time);
 
 
-  void onEnter(Game &game, Board &board);
   void update(sf::RenderWindow &window, Board &board);
-  void onEvent(sf::Event event, Board &board);
+  void onEvent(sf::Vector2i &position, sf::Event event, Board &board);
   void render(sf::RenderWindow& window, int time);
   
 

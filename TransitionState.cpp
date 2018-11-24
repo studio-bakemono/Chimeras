@@ -29,7 +29,7 @@ void TransitionState::onEvent(sf::Event event) {
 
 std::shared_ptr<State> TransitionState::update(sf::RenderWindow& window) {
 
-  if (timer.getElapsedTime().asSeconds() >= 3.f) {
+  if (timer.getElapsedTime().asSeconds() >= 1.0f) {
     std::cout << " transitioning to new State!" << std::endl;
     return transitionTo;
   }

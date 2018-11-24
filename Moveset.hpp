@@ -33,17 +33,11 @@ public:
     }
 
     // If right side has an offet ret doesn't push it back to ret's offsets
-    for (auto a : ret.offsets) {
-      //ugly bool because goto's are frowned upon
-      bool push = true;
-      for ( auto b : m.offsets ) {
-	if ( a == b ){
-          push=false;
-          break;
-        }
-      }
-      if(push)
+    for (auto a : m.offsets) {
+      auto &o = ret.offsets;
+      if(std::find(o.begin(), o.end(), a) == o.end()){
         ret.offsets.push_back(a);
+      }
     }
     return ret;
   }

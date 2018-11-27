@@ -79,7 +79,7 @@ Piece::~Piece() {
 }
 
 void Piece::consumePiece(Piece other) {
-  consumeMoveset(other.moveset, other.player == player);
+  consumeMoveset(other.moveset, other.player != player);
   consumeBasepiece(other.basepiece);
 }
 

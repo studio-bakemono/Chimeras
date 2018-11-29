@@ -157,6 +157,20 @@ void MenuState::onEvent(sf::Event event) {
     
     std::cout << "Enter key pressed, transitioning " << selected << std::endl;
   }
+  if (
+    event.type == sf::Event::MouseButtonPressed
+    && event.mouseButton.button == sf::Mouse::Button::Left
+  ){
+    sf::Vector2f mouse(event.mouseButton.x, event.mouseButton.y);
+    for(int i = 0; i<MENU_LENGTH; i++){
+      if(menuItems[i].rect.getGlobalBounds().contains(mouse)){
+        selected = i;
+        std::cout << "LMB clicked, transitioning to " << selected << std::endl;
+        transitioning = true;
+        break;
+      }
+    }
+  }
 }
 
 
@@ -165,8 +179,9 @@ std::shared_ptr<State> MenuState::update(sf::RenderWindow& window) {
 
   updateBreath(breathClock.getElapsedTime());
   
-  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && (transitioning == true) ){
+  if ( transitioning == true ){
     std::cout << "Entering state" <<std::endl;
+    transitioning=false;
     return menuItems[selected].menState(this);
   }
   

@@ -206,7 +206,6 @@ void Board::onEvent(sf::Event event){
       pieces[sectorIndex] = piece;
       if (prey){
         piece->consumePiece(*prey);
-        piece->calculateTexCoord(0);
         delete prey;
         //Check for game over!
         checkGameOver();
@@ -220,6 +219,7 @@ void Board::onEvent(sf::Event event){
       piece->position = piece->origin;
     }
     pieceBeingMoved=0;
+    piece->calculateTexCoord(0);
     colorTurnMovables();
   }else if ((!pieceBeingMoved) && (!oob)
     && event.type == sf::Event::MouseButtonPressed
@@ -231,6 +231,7 @@ void Board::onEvent(sf::Event event){
     if(piece && piece->player == playerTurn){
       // Pick piece up
       piece->beingMoved=true;
+      piece->calculateTexCoord(0);
       piece->origin=piece->position;
       colorWith(sectorPosition, *piece);
     }else{

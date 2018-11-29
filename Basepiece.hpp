@@ -3,13 +3,13 @@
 #include <iostream>
 
 enum Basepiece{
-  KING, // Lion
-  QUEEN, // Cat
-  PAWN, // Penguin
-  ROOK,  // Bear
+  KING,   // Lion
+  QUEEN,  // Cat
+  PAWN,   // Penguin
+  ROOK,   // Bear
   BISHOP, // Raccoon
   KNIGHT, // Fish
-  CIRCLE, //Circle
+  CIRCLE, // Circle
   LEN
 };
 
@@ -26,13 +26,13 @@ inline int combine_basepieces(Basepiece one, Basepiece two){
 
 inline std::string basepiece_to_string(Basepiece piece){
   static std::string BASEPIECE_NAME[] = {
-    "Lion", // KING
-    "Cat", // QUEEN
+    "Lion",    // KING
+    "Cat",     // QUEEN
     "Penguin", // PAWN
-    "Bear", // ROOK
+    "Bear",    // ROOK
     "Raccoon", // BISHOP
-    "Fish", // KNIGHT
-    "Circle", // CIRCLE
+    "Fish",    // KNIGHT
+    "Circle",  // CIRCLE
   };
   return BASEPIECE_NAME[piece];
 }

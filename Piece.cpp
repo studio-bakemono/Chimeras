@@ -105,23 +105,41 @@ void Piece::snapToSector(sf::Vector2i sector, Board& board) {
   position = sf::Vector2f( board.sectors[sector.y-1][sector.x-1].left, board.sectors[sector.y-1][sector.x-1].top );
 }
 
-bool Piece::validateMove(Board &board, sf::Vector2i offset){
+bool Piece::validateMove(Board &board, sf::Vector2i offset, sf::Vector2i pos){
   // No stalling :3
   if (!offset.x && !offset.y){ 
     return false;
   }
 
   // Check infinite directional bools 	
-
   if (moveset.horizontal && !offset.y) {
+    int dir = (offset.x>0)*2-1;
+    //offset now represents an absolute position
+    offset.x+=pos.x;
+    for(int x = pos.x + dir; x != offset.x; x += dir)
+      if(board.pieces[x+pos.y*board.boardSize]!=nullptr)
+        return false;
     return true;
   }
   if (moveset.vertical && !offset.x) {
+    int dir = (offset.y>0)*2-1;
+    //offset now represents an absolute position
+    offset.y+=pos.y;
+    for(int y = pos.y + dir; y != offset.y; y += dir)
+      if(board.pieces[pos.x+y*board.boardSize]!=nullptr)
+        return false;
     return true;
   }
-  if (moveset.diagonal &&
-    abs(offset.x) ==
-    abs(offset.y)) {
+  if (
+    moveset.diagonal
+    && abs(offset.x) == abs(offset.y)
+  ) {
+    sf::Vector2i dir = sf::Vector2i((offset.x>0)*2-1, (offset.y>0)*2-1);
+    //offset now represents an absolute position
+    offset+=pos;
+    for(pos += dir; pos != offset; pos += dir)
+      if(board.pieces[pos.x+pos.y*board.boardSize]!=nullptr)
+        return false;
     return true;
   }
   if (moveset.circular){

@@ -120,7 +120,7 @@ void Board::colorWith(sf::Vector2i from, Piece &piece) {
   };
   for (int y = 0; y < boardSize; y++) {
     for (int x = 0; x < boardSize; x++) {
-      debugSectors[y][x].setFillColor(colors[(x%2^y%2)+2*(piece.validateMove(*this, sf::Vector2i(x-from.x, y-from.y)))]);
+      debugSectors[y][x].setFillColor(colors[(x%2^y%2)+2*(piece.validateMove(*this, sf::Vector2i(x-from.x, y-from.y), from))]);
     }
   }
 }
@@ -195,10 +195,11 @@ void Board::onEvent(sf::Event event){
     auto piece = pieces[pieceBeingMoved];
     piece->beingMoved=false;
     //dropPiece(*this, sectorPosition, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
-    if( !oob && piece->validateMove(*this, sf::Vector2i(
-      sectorPosition.x-(pieceBeingMoved%boardSize),
-      sectorPosition.y-(pieceBeingMoved/boardSize)
-    ))){
+    sf::Vector2i pos (
+      (pieceBeingMoved%boardSize),
+      (pieceBeingMoved/boardSize)
+    );
+    if( !oob && piece->validateMove(*this, sectorPosition-pos, pos)){
       pieces[pieceBeingMoved]=nullptr;
       auto sectorIndex = sectorPosition.x+sectorPosition.y*boardSize;
       auto prey = pieces[sectorIndex];

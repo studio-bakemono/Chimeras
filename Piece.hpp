@@ -46,7 +46,7 @@ public:
 
   void snapToSector(sf::Vector2i sector, Board &board);
   //TODO: Refractor validate into moveset?
-  bool validateMove(Board &board, sf::Vector2i offset);
+  bool validateMove(Board &board, sf::Vector2i offset, sf::Vector2i pos);
 
   void distributePosition();
   void calculateTexCoord(int time);

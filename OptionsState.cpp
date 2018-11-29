@@ -8,6 +8,7 @@
 #include "TestState.hpp"
 #include "TransitionState.hpp"
 #include "OptionsState.hpp"
+#include "GameOverState.hpp"
 
 OptionsState::OptionsState() {
 }
@@ -24,7 +25,7 @@ void OptionsState::onEnter(Game &game) {
   hello.setString("Chimeras");
   hello.setFont(game.font);
   hello.setCharacterSize(30);
-  MENU_LENGTH = 2;
+  MENU_LENGTH = 3;
   hello.setPosition(sf::Vector2f( game.window.getSize().x/2 - 10 - hello.getLocalBounds().width/2,
                                  game.window.getSize().y/2 - hello.getLocalBounds().height/2 ));
   
@@ -37,9 +38,11 @@ void OptionsState::onEnter(Game &game) {
   
   MenuItem* option1 = &menuItems[0];
   MenuItem* option2 = &menuItems[1];
+  MenuItem* option3 = &menuItems[2];
   
   option1->name = "Options";
   option2->name = "Play";
+  option3->name = "Temporary Game Over Test";
   
   option1->rect.setSize(sf::Vector2f(100,50));
   option1->rect.setOutlineColor(sf::Color::Red);
@@ -52,11 +55,19 @@ void OptionsState::onEnter(Game &game) {
   option2->rect.setFillColor(sf::Color::Black);
   option2->rect.setOutlineThickness(5);
   option2->rect.setPosition(sf::Vector2f( game.window.getSize().x/2 - 10 - option2->rect.getLocalBounds().width/2, game.window.getSize().y/2 + 200));
+
+
+  option3->rect.setSize(sf::Vector2f(100,50));
+  option3->rect.setOutlineColor(sf::Color::Red);
+  option3->rect.setFillColor(sf::Color::Black);
+  option3->rect.setOutlineThickness(5);
+  option3->rect.setPosition(sf::Vector2f( game.window.getSize().x/2 - 10 - option3->rect.getLocalBounds().width/2 - 200, game.window.getSize().y/2 + 250));
   
   
   // If it has states to switch to give them it
   option1->menState = [](State *) { return std::make_shared<OptionsState>(); };
   option2->menState = [](State *) { return std::make_shared<TransitionState> (std::make_shared<TestState>()); };
+  option3->menState = [](State *) { return std::make_shared<GameOverState>("Game over test works!"); };
   
   // Do menuItem text settings here to make positioning relative to rectShape's
   for ( auto& m : menuItems ) {

@@ -11,6 +11,7 @@
 // Forward declarations to avoid circular inclusions
 class Game;
 class Piece;
+class TestState;
 
 class Board {
 
@@ -31,7 +32,10 @@ public:
   int playerTurn=0;
   bool dragndrop=true;
   int pieceBeingMoved=0;
-  
+
+  friend class TestState;
+  //-1 for nothing yet, -2 for tie, -3 for mid_transition, 0 or 1 for player
+  int won_player=-1;
   
 public:
   Board();
@@ -42,7 +46,11 @@ public:
 
   void colorWith(sf::Vector2i from, Piece &piece);
   void colorTurnMovables();
+  //TODO: ResetColor no longer used. Will be useful for networking/AI matches,
+  // where the enemies' pieces should not be highlighted (as that indicates you can move them)
   void resetColor();
+  void checkGameOver();
+
   void update(sf::RenderWindow& window);
   void onEvent(sf::Event event);
   void render(sf::RenderWindow& window);

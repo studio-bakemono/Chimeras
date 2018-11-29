@@ -3,6 +3,8 @@
 */
 
 #include "TestState.hpp"
+#include "GameOverState.hpp"
+#include "TransitionState.hpp"
 #include "Game.hpp"
 
 //#include "Board.hpp"
@@ -42,12 +44,21 @@ void TestState::onEvent(sf::Event event) {
 std::shared_ptr<State> TestState::update(sf::RenderWindow& window) {
 
   board.update(window);
-
-  for(auto &piece : board.pieces) {
-    if(piece)
-      piece->update(window, board);
+  switch (board.won_player){
+    case -1:
+    case -3:
+      break;
+    case -2:{
+      auto tie = std::make_shared<TransitionState>(std::make_shared<GameOverState>("Tie! You're all losers!"));
+      board.won_player=-3;
+      return tie;
+    }
+    default:{
+      auto go = std::make_shared<TransitionState>(std::make_shared<GameOverState>("Player "+std::to_string(board.won_player)+" Won!"));
+      board.won_player=-3;
+      return go;
+    }
   }
-  
   return nullptr;
 }
 

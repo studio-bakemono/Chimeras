@@ -155,9 +155,17 @@ void Board::resetColor() {
 }
 
 void Board::update(sf::RenderWindow& window) {
+  for(auto &piece : pieces) {
+    if(piece)
+      piece->update(window, *this);
+  }
 }
 
 void Board::onEvent(sf::Event event){
+  //Quick exit, for when transitioning from this state to gameOver
+  if(won_player!=-1)
+    return;
+  
   //We immediately assume the event is a mouse position,
   // and if it isn't, we simply won't use the garbage values we just computed.
 
@@ -199,6 +207,8 @@ void Board::onEvent(sf::Event event){
         piece->consumePiece(*prey);
         piece->calculateTexCoord(0);
         delete prey;
+        //Check for game over!
+        checkGameOver();
       }
       sf::FloatRect snapRect = sectors[sectorPosition.y][sectorPosition.x];
       piece->position.x = snapRect.left;
@@ -227,6 +237,41 @@ void Board::onEvent(sf::Event event){
       // 0 indicates no moving piece
       pieceBeingMoved=0;
     }
+  }
+}
+
+void Board::checkGameOver(){
+  std::vector<bool> pHasKing;
+  pHasKing.resize(playerCount, false);
+  for (int y = 0; y < boardSize; y++) {
+    for (int x = 0; x < boardSize; x++) {
+      auto piece = pieces[x+y*boardSize];
+      if (piece && !pHasKing[piece->player]){
+        pHasKing[piece->player] = piece->basepiece == Basepiece::KING;
+      }
+    }
+  }
+  int kingCount=0;
+  for( int p = 0; p<playerCount; p++){
+    if (pHasKing[p]){
+      //temporary, they havn't won _yet_
+      won_player = p;
+      kingCount++;
+    }
+  }
+  switch(kingCount){
+    case 0:
+      //TIE!?
+      won_player=-2;
+      break;
+    case 1:
+      //Somebody won!
+      //We already set won_player to them..
+      break;
+    default:
+      //Game must go on..
+      won_player=-1;
+      break;
   }
 }
 

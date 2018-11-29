@@ -29,9 +29,7 @@ public:
 
   
   sf::Vector2f origin;
-
-  void dropPiece(Board &board, sf::Vector2i &sectorPosition, sf::Vector2f mousepos);
-
+  
   int player;
   int atlas_width;
   bool facing_front;
@@ -48,7 +46,7 @@ public:
 
   void snapToSector(sf::Vector2i sector, Board &board);
   //TODO: Refractor validate into moveset?
-  bool validateMove(Board &board, sf::Vector2i from, sf::Vector2i to);
+  bool validateMove(Board &board, sf::Vector2i offset);
 
   void distributePosition();
   void calculateTexCoord(int time);

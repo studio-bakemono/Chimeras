@@ -18,7 +18,6 @@ public:
 
   sf::VertexArray gridLines;
   int boardSize = 8;
-  int boardWidth, boardHeight;
   float sectorSize;
 
   
@@ -28,7 +27,10 @@ public:
   std::vector<std::vector<sf::RectangleShape>> debugSectors;
 
   std::vector<Piece*> pieces;
-
+  int playerCount=2;
+  int playerTurn=0;
+  bool dragndrop=true;
+  int pieceBeingMoved=0;
   
   
 public:
@@ -39,6 +41,7 @@ public:
   ~Board();
 
   void colorWith(sf::Vector2i from, Piece &piece);
+  void colorTurnMovables();
   void resetColor();
   void update(sf::RenderWindow& window);
   void onEvent(sf::Event event);

@@ -26,13 +26,13 @@ inline int combine_basepieces(Basepiece one, Basepiece two){
 
 inline std::string basepiece_to_string(Basepiece piece){
   static std::string BASEPIECE_NAME[] = {
-    "King",
-    "Queen",
-    "Pawn",
-    "Rook",
-    "Bishop",
-    "Knight",
-    "Circle",
+    "Lion", // KING
+    "Cat", // QUEEN
+    "Penguin", // PAWN
+    "Bear", // ROOK
+    "Raccoon", // BISHOP
+    "Fish", // KNIGHT
+    "Circle", // CIRCLE
   };
   return BASEPIECE_NAME[piece];
 }

@@ -19,10 +19,10 @@ TestState::~TestState() {
 
 void TestState::onEnter(Game &game) {
 
-  greeting.setString("TestState");
-  greeting.setFont(game.font);
-  greeting.setCharacterSize(20);
-  greeting.setPosition(0,0);
+  // greeting.setString("TestState");
+  // greeting.setFont(game.font);
+  // greeting.setCharacterSize(20);
+  // greeting.setPosition(0,0);
 
   float boardWidth, boardHeight;
 

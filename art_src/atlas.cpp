@@ -20,10 +20,14 @@ int main( int /*argc*/, char ** argv)
   try {
     // Read in the background, so that missing sprites have a unique error texture
     atlas.read("err_tex.png");
-    atlas.crop( Geometry( ATLAS_SIZE, ATLAS_SIZE, 0, 0 ) );
+atlas.crop( Geometry( ATLAS_SIZE, ATLAS_SIZE, 0, 0 ) );
     // s & l : small and large
     int animal = 0;
     int const ATLAS_SPRITEW = ATLAS_SIZE / SPRITE_SIZE;
+
+    // For drawing holes
+//    atlas.fillColor("rgba(0,0,0,100)");
+    atlas.fillColor("magenta");
     for(int l = 0; l < Basepiece::LEN; l++){
       for(int s = 0; s <= l; s++){
         int t_animal = combine_basepieces((Basepiece)s, (Basepiece)l);
@@ -41,7 +45,10 @@ int main( int /*argc*/, char ** argv)
             for(int frame=0;frame<2;frame++){
               Image sprite = in;
               sprite.crop( Geometry( SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE*face, SPRITE_SIZE*frame ) );
-              atlas.composite( sprite, (off % ATLAS_SPRITEW) * SPRITE_SIZE, (off / ATLAS_SPRITEW) * SPRITE_SIZE, OverCompositeOp );
+              int x = (off % ATLAS_SPRITEW) * SPRITE_SIZE;
+              int y = (off / ATLAS_SPRITEW) * SPRITE_SIZE;
+              atlas.draw( DrawableRectangle(x, y, x+SPRITE_SIZE, y+SPRITE_SIZE) );
+              atlas.composite( sprite, x, y, OverCompositeOp );
               off++;
             }
           }
@@ -52,6 +59,7 @@ int main( int /*argc*/, char ** argv)
         animal++;
       }
     }
+    atlas.transparent("magenta");
     atlas.write("../assets/atlas.png");
   }catch(Exception &error){
     cerr << "Caught fatal exception: " << error.what() << endl;

@@ -141,7 +141,6 @@ void MenuState::onEvent(sf::Event event) {
   if ( (event.type == sf::Event::KeyPressed)  && (event.key.code == sf::Keyboard::Down)){
     menuItems[selected].rect.setFillColor(sf::Color::Black);
     selected = (selected+1)%MENU_LENGTH;
-    std::cout << "Downkey pressed, in state " << selected << std::endl;
     menuItems[selected].rect.setFillColor(sf::Color::Red);
   }
   if ( (event.type == sf::Event::KeyPressed)  && (event.key.code == sf::Keyboard::Up)){
@@ -149,13 +148,22 @@ void MenuState::onEvent(sf::Event event) {
     selected++;
     selected = (selected%MENU_LENGTH + MENU_LENGTH)%MENU_LENGTH;
     menuItems[selected].rect.setFillColor(sf::Color::Red);
-    
-    std::cout << "Upkey pressed, in state " << selected << std::endl;
   }
   if ( (event.type == sf::Event::KeyPressed)  && (event.key.code == sf::Keyboard::Enter)){
     transitioning = true;
-    
-    std::cout << "Enter key pressed, transitioning " << selected << std::endl;
+  }
+  if (
+    event.type == sf::Event::MouseButtonPressed
+    && event.mouseButton.button == sf::Mouse::Button::Left
+  ){
+    sf::Vector2f mouse(event.mouseButton.x, event.mouseButton.y);
+    for(int i = 0; i<MENU_LENGTH; i++){
+      if(menuItems[i].rect.getGlobalBounds().contains(mouse)){
+        selected = i;
+        transitioning = true;
+        break;
+      }
+    }
   }
 }
 
@@ -165,8 +173,8 @@ std::shared_ptr<State> MenuState::update(sf::RenderWindow& window) {
 
   updateBreath(breathClock.getElapsedTime());
   
-  if ( sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && (transitioning == true) ){
-    std::cout << "Entering state" <<std::endl;
+  if ( transitioning == true ){
+    transitioning=false;
     return menuItems[selected].menState(this);
   }
   

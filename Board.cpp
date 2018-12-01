@@ -71,7 +71,6 @@ Board::Board(Game &game, sf::Vector2f position,
       
     }
    }
-   resetColor();  
 
   //#### Add pieces to board
   //TODO: Extend board to higher sizes
@@ -87,8 +86,8 @@ Board::Board(Game &game, sf::Vector2f position,
   };
   assert(boardSize<=sizeof(CHESS_ORDER)/sizeof(CHESS_ORDER[0]));
   pieces.reserve(boardSize*boardSize);
-  for(int x=0; x < boardSize; x++){
-    for(int y=0; y < boardSize; y++){
+  for(int y=0; y < boardSize; y++){
+    for(int x=0; x < boardSize; x++){
       bool player;
       if(y < 2){
         player=false;
@@ -103,6 +102,8 @@ Board::Board(Game &game, sf::Vector2f position,
         sf::Vector2i(x+1, y+1), player));
     }
   }
+  //resetColor();  
+  colorTurnMovables();
 }
 
 Board::~Board() {
@@ -117,12 +118,29 @@ void Board::colorWith(sf::Vector2i from, Piece &piece) {
     sf::Color(55,255,55),
     sf::Color(0,100,0),
   };
-  for (int i = 0; i < boardSize; i++) {
-    for (int r = 0; r < boardSize; r++) {
-      debugSectors[r][i].setFillColor(colors[(r%2^i%2)+2*(piece.validateMove(*this, from, sf::Vector2i(i+1,r+1)))]);
+  for (int y = 0; y < boardSize; y++) {
+    for (int x = 0; x < boardSize; x++) {
+      debugSectors[y][x].setFillColor(colors[(x%2^y%2)+2*(piece.validateMove(*this, sf::Vector2i(x-from.x, y-from.y), from))]);
     }
   }
 }
+
+void Board::colorTurnMovables() {
+  // Draw the chessboard checkered pattern
+  sf::Color colors[] = {
+    sf::Color::White,
+    sf::Color::Black,
+    sf::Color(255,55,55),
+    sf::Color(100,0,0),
+  };
+  for (int x = 0; x < boardSize; x++) {
+    for (int y = 0; y < boardSize; y++) {
+      auto piece = pieces[x+y*boardSize];
+      debugSectors[y][x].setFillColor(colors[(x%2^y%2)+2*(piece&&(playerTurn==piece->player))]);
+    }
+  }
+}
+
 
 void Board::resetColor() {
   // Draw the chessboard checkered pattern
@@ -137,46 +155,125 @@ void Board::resetColor() {
 }
 
 void Board::update(sf::RenderWindow& window) {
+  for(auto &piece : pieces) {
+    if(piece)
+      piece->update(window, *this);
+  }
+}
 
-  for (int i = 0; i < boardSize; i++) {
-    for (int r = 0; r < boardSize; r++) {
+void Board::onEvent(sf::Event event){
+  //Quick exit, for when transitioning from this state to gameOver
+  if(won_player!=-1)
+    return;
+  
+  //We immediately assume the event is a mouse position,
+  // and if it isn't, we simply won't use the garbage values we just computed.
 
-      if (sectors[r][i].contains(sf::Mouse::getPosition(window).x,
-				 sf::Mouse::getPosition(window).y )) {
+  // sectorPosition is the cell we are moving to
+  sf::Vector2i sectorPosition;
+  //Are we Out Of Bounds?
+  bool oob;
+  {
+    //rel is the relative position of the mouse, and is irrelevant outside of this block
+    sf::Vector2f rel (
+      (event.mouseButton.x-position.x)/sectorSize,
+      (event.mouseButton.y-position.y)/sectorSize
+    );
+    sectorPosition = sf::Vector2i(rel.x, rel.y);
+    oob = (
+      rel.x < 0 || rel.y < 0 // Rel and not sectorPos, because of rounding issues
+      || sectorPosition.x >= boardSize
+      || sectorPosition.y >= boardSize
+    );
+  }
 
-	/*
-	std::cout << "Mouse is in sector [" << r+1 << "," << i+1 << "]" <<
-	  "at posiiton: " << sf::Mouse::getPosition(window).x << " "
-		  << sf::Mouse::getPosition(window).y << std::endl;
-	*/
+  if ( pieceBeingMoved
+    && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
+    && event.mouseButton.button == sf::Mouse::Button::Left
+  ){
+    pieceBeingMoved--;
+    auto piece = pieces[pieceBeingMoved];
+    piece->beingMoved=false;
+    //dropPiece(*this, sectorPosition, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
+    sf::Vector2i pos (
+      (pieceBeingMoved%boardSize),
+      (pieceBeingMoved/boardSize)
+    );
+    if( !oob && piece->validateMove(*this, sectorPosition-pos, pos)){
+      pieces[pieceBeingMoved]=nullptr;
+      auto sectorIndex = sectorPosition.x+sectorPosition.y*boardSize;
+      auto prey = pieces[sectorIndex];
+      pieces[sectorIndex] = piece;
+      if (prey){
+        piece->consumePiece(*prey);
+        delete prey;
+        //Check for game over!
+        checkGameOver();
+      }
+      sf::FloatRect snapRect = sectors[sectorPosition.y][sectorPosition.x];
+      piece->position.x = snapRect.left;
+      piece->position.y = snapRect.top;
+      piece->distributePosition();
+      playerTurn = (playerTurn+1)%playerCount;
+    }else{
+      piece->position = piece->origin;
+    }
+    pieceBeingMoved=0;
+    piece->calculateTexCoord(0);
+    colorTurnMovables();
+  }else if ((!pieceBeingMoved) && (!oob)
+    && event.type == sf::Event::MouseButtonPressed
+    && event.mouseButton.button == sf::Mouse::Button::Left
+  ){
+    //pieceBeingMoved is offset by one most of the time, to let 0 be null
+    pieceBeingMoved=1+sectorPosition.x+sectorPosition.y*boardSize;
+    auto piece = pieces[pieceBeingMoved-1];
+    if(piece && piece->player == playerTurn){
+      // Pick piece up
+      piece->beingMoved=true;
+      piece->calculateTexCoord(0);
+      piece->origin=piece->position;
+      colorWith(sectorPosition, *piece);
+    }else{
+      //oops! theres no piece here.
+      // 0 indicates no moving piece
+      pieceBeingMoved=0;
+    }
+  }
+}
+
+void Board::checkGameOver(){
+  std::vector<bool> pHasKing;
+  pHasKing.resize(playerCount, false);
+  for (int y = 0; y < boardSize; y++) {
+    for (int x = 0; x < boardSize; x++) {
+      auto piece = pieces[x+y*boardSize];
+      if (piece && !pHasKing[piece->player]){
+        pHasKing[piece->player] = piece->basepiece == Basepiece::KING;
       }
     }
   }
-  
-  
-}
-
-//TODO: Make this slightly less jank.
-// For now, it Works, and we don't have to rewrite Piece.cpp hardly at all
-void Board::onEvent(sf::Event event){
-  for(int x=0; x < boardSize; x++) {
-    for(int y=0; y < boardSize; y++) {
-      auto piece = pieces[x*boardSize+y];
-      pieces[x*boardSize+y] = nullptr;
-      if(piece){
-        auto pos = sf::Vector2i(x+1,y+1);
-        piece->onEvent(pos, event, *this);
-        pos.x-=1;
-        pos.y-=1;
-        auto &prey = pieces[pos.x*boardSize+pos.y];
-        if (prey){
-          piece->consumePiece(*prey);
-          piece->calculateTexCoord(0);
-          delete prey;
-        }
-        pieces[pos.x*boardSize+pos.y] = piece;
-      }
+  int kingCount=0;
+  for( int p = 0; p<playerCount; p++){
+    if (pHasKing[p]){
+      //temporary, they havn't won _yet_
+      won_player = p;
+      kingCount++;
     }
+  }
+  switch(kingCount){
+    case 0:
+      //TIE!?
+      won_player=-2;
+      break;
+    case 1:
+      //Somebody won!
+      //We already set won_player to them..
+      break;
+    default:
+      //Game must go on..
+      won_player=-1;
+      break;
   }
 }
 

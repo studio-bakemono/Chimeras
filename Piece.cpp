@@ -79,7 +79,7 @@ Piece::~Piece() {
 }
 
 void Piece::consumePiece(Piece other) {
-  consumeMoveset(other.moveset, other.player == player);
+  consumeMoveset(other.moveset, other.player != player);
   consumeBasepiece(other.basepiece);
 }
 
@@ -105,29 +105,47 @@ void Piece::snapToSector(sf::Vector2i sector, Board& board) {
   position = sf::Vector2f( board.sectors[sector.y-1][sector.x-1].left, board.sectors[sector.y-1][sector.x-1].top );
 }
 
-bool Piece::validateMove(Board &board, sf::Vector2i sectorPosition, sf::Vector2i pos){
+bool Piece::validateMove(Board &board, sf::Vector2i offset, sf::Vector2i pos){
   // No stalling :3
-  if (pos == sectorPosition){ 
+  if (!offset.x && !offset.y){ 
     return false;
   }
 
   // Check infinite directional bools 	
-
-  if (moveset.horizontal && sectorPosition.y == pos.y) {
+  if (moveset.horizontal && !offset.y) {
+    int dir = (offset.x>0)*2-1;
+    //offset now represents an absolute position
+    offset.x+=pos.x;
+    for(int x = pos.x + dir; x != offset.x; x += dir)
+      if(board.pieces[x+pos.y*board.boardSize]!=nullptr)
+        return false;
     return true;
   }
-  if (moveset.vertical && sectorPosition.x == pos.x) {
+  if (moveset.vertical && !offset.x) {
+    int dir = (offset.y>0)*2-1;
+    //offset now represents an absolute position
+    offset.y+=pos.y;
+    for(int y = pos.y + dir; y != offset.y; y += dir)
+      if(board.pieces[pos.x+y*board.boardSize]!=nullptr)
+        return false;
     return true;
   }
-  if (moveset.diagonal &&
-    abs(sectorPosition.x - pos.x) ==
-    abs(sectorPosition.y - pos.y)) {
+  if (
+    moveset.diagonal
+    && abs(offset.x) == abs(offset.y)
+  ) {
+    sf::Vector2i dir = sf::Vector2i((offset.x>0)*2-1, (offset.y>0)*2-1);
+    //offset now represents an absolute position
+    offset+=pos;
+    for(pos += dir; pos != offset; pos += dir)
+      if(board.pieces[pos.x+pos.y*board.boardSize]!=nullptr)
+        return false;
     return true;
   }
   if (moveset.circular){
     double const RAD = 3.0;
-    double l = abs(sectorPosition.x - pos.x);
-    double s = abs(sectorPosition.y - pos.y);
+    double l = abs(offset.x);
+    double s = abs(offset.y);
     if (l<s)
       std::swap(s,l);
     if(round(sqrt(RAD*RAD-s*s))==l){
@@ -137,56 +155,14 @@ bool Piece::validateMove(Board &board, sf::Vector2i sectorPosition, sf::Vector2i
 
   // Check offsets for valid moves
   for (auto m : moveset.offsets) {  
-    if ( pos == sectorPosition+m ) {
+    if ( offset == m ) {
       return true;
     }
  }
  return false;
 }
 
-void Piece::dropPiece(Board &board, sf::Vector2i &sectorPosition, sf::Vector2f mousepos)
-{
-  for ( int i = 0; i < board.sectors.size(); i++ ) {
-    for ( int r = 0; r < board.sectors[i].size(); r++ ) {
-      if ( board.sectors[r][i].contains(mousepos) ) {
-        if(validateMove(board, sectorPosition, sf::Vector2i(i+1, r+1))){
-          sf::FloatRect snapRect = board.sectors[r][i];
-          sectorPosition=sf::Vector2i(i+1, r+1);
-          position.x = snapRect.left;
-          position.y = snapRect.top;
-          distributePosition();
-          return;
-        }
-      }
-    }
-  }
-  if (dragndrop){
-    position=origin;
-    distributePosition();
-  }
-}
-
 void Piece::onEvent(sf::Vector2i &sectorPosition, sf::Event event, Board &board) {
-  if ( beingMoved
-       // Determine what control mode is being used, compare different events
-    && event.type == (dragndrop ? sf::Event::MouseButtonReleased : sf::Event::MouseButtonPressed)
-       // If mouse button is down
-    && event.mouseButton.button == sf::Mouse::Button::Left) {
-    beingMoved=false;
-    calculateTexCoord(0);
-    dropPiece(board, sectorPosition, sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y));
-    board.resetColor();
-  }
-  if ((!beingMoved)
-    && event.type == sf::Event::MouseButtonPressed
-    && event.mouseButton.button == sf::Mouse::Button::Left
-    && collider.contains( sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y)) ) {
-    // Pick piece up
-    beingMoved=true;
-    calculateTexCoord(0);
-    origin=position;
-    board.colorWith(sectorPosition, *this);
-  }
 }
 
 

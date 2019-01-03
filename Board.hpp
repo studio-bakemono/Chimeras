@@ -28,23 +28,24 @@ public:
   std::vector<std::vector<sf::RectangleShape>> debugSectors;
 
   std::vector<Piece*> pieces;
-  int playerCount=2;
-  int playerTurn=0;
-  bool dragndrop=true;
-  int pieceBeingMoved=0;
+
+  int playerCount     = 2;
+  int playerTurn      = 0;
+  bool dragndrop      = true;
+  int pieceBeingMoved = 0;
 
   friend class TestState;
   //-1 for nothing yet, -2 for tie, -3 for mid_transition, 0 or 1 for player
-  int won_player=-1;
+  int won_player = -1;
   
 public:
   Board();
-  Board(Game &game, sf::Vector2f position,
+  Board(Game& game, sf::Vector2f position,
 	int boardSize, float boardWidth, float boardHeight );
 
   ~Board();
 
-  void colorWith(sf::Vector2i from, Piece &piece);
+  void colorWith(sf::Vector2i from, Piece& piece);
   void colorTurnMovables();
   //TODO: ResetColor no longer used. Will be useful for networking/AI matches,
   // where the enemies' pieces should not be highlighted (as that indicates you can move them)

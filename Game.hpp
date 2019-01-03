@@ -10,9 +10,12 @@
 
 class Game{
 public:
-  const uint16_t WINDOW_WIDTH = 600;
-  const uint16_t WINDOW_HEIGHT = 600;
+
+  uint16_t WINDOW_WIDTH = 1280;
+  uint16_t WINDOW_HEIGHT = 720;
   const uint16_t FRAME_RATE = 60;
+
+  float boardScale = 0.75f;
 
 public:
   

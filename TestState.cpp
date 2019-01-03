@@ -17,24 +17,30 @@ TestState::TestState() {
 TestState::~TestState() {
 }
 
-void TestState::onEnter(Game &game) {
+void TestState::onEnter(Game& game) {
 
   // greeting.setString("TestState");
   // greeting.setFont(game.font);
   // greeting.setCharacterSize(20);
   // greeting.setPosition(0,0);
 
-  float boardWidth, boardHeight;
 
-  boardWidth = 0.75f * (float)game.WINDOW_WIDTH;
-  boardHeight = 0.75f * (float)game.WINDOW_HEIGHT;
+  // Determine render width and height of board inside window
+  // One Variable since the board is a square
+  float boardDimensions;
 
+  // boardWidth = game.boardScale * (float)game.WINDOW_WIDTH/2;
+  boardDimensions = game.boardScale * (float)game.WINDOW_HEIGHT;
+
+  std::cout << "boardDimensions: " << boardDimensions << std::endl;
   
-  auto position = sf::Vector2f( ((float)game.WINDOW_WIDTH)/2.f -boardWidth/2.f,
-				((float)game.WINDOW_HEIGHT)/2.f -boardHeight/2.f);
+
+  // Set position relative to boardScale 
+  auto position = sf::Vector2f( ((float)game.WINDOW_WIDTH)/8,
+				((float)game.WINDOW_HEIGHT)/2.f -boardDimensions/2.f);
   
   
-  board = Board(game, position, 8, boardWidth, boardHeight);
+  board = Board(game, position, 8, boardDimensions, boardDimensions);
 }
 
 void TestState::onEvent(sf::Event event) {
